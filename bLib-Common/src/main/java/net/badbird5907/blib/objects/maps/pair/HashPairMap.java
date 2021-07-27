@@ -9,10 +9,11 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * I know it's not the right terminology dont bully me
- * @param <K>
- * @param <V>
- * @param <M>
+ * {@link HashMap} but with 2 values
+ * <b>I know it's not the right terminology dont bully me</b>
+ * @param <K> key
+ * @param <V> value1
+ * @param <M> value2
  */
 public class HashPairMap<K,V,M> implements PairMap{
     Map<K, Pair<V,M>> base = new HashMap<>();

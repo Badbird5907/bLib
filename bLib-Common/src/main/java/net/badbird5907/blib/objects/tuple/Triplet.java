@@ -1,5 +1,11 @@
 package net.badbird5907.blib.objects.tuple;
 
+/**
+ * three types
+ * @param <A>
+ * @param <B>
+ * @param <C>
+ */
 public class Triplet<A,B,C> {
     private A value0;
     private B value1;
@@ -10,14 +16,26 @@ public class Triplet<A,B,C> {
         this.value2 = v2;
     }
 
+    /**
+     * gets the first value
+     * @return
+     */
     public A getValue0() {
         return value0;
     }
 
+    /**
+     * gets the second value
+     * @return
+     */
     public B getValue1() {
         return value1;
     }
 
+    /**
+     * gets the third value
+     * @return
+     */
     public C getValue2() {
         return value2;
     }

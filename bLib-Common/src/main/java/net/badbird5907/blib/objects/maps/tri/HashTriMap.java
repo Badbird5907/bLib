@@ -8,6 +8,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * {@link HashMap} but with 3 values and 1 key
+ * <b>I know it's not the right terminology dont bully me</b>
+ * @param <K> key
+ * @param <V> value 1
+ * @param <M> value 2
+ * @param <A> value 3
+ */
 public class HashTriMap<K,V,M,A> implements TriMap {
     Map<K, Triplet<V,M,A>> base = new HashMap<>();
     transient Set<Entry<K,V,M,A>> entrySet;

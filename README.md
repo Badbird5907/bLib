@@ -6,7 +6,7 @@ Maven:
 <dependency>
     <groupId>net.badbird5907</groupId>
     <artifactId>bLib-Parent</artifactId>
-    <version>1.0.0-REL</version>
+    <version>1.0.1-REL</version>
 </dependency>
 ```
 Gradle:

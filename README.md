@@ -5,7 +5,7 @@ Maven:
 ```xml
 <dependency>
     <groupId>net.badbird5907</groupId>
-    <artifactId>bLib</artifactId>
+    <artifactId>bLib-Parent</artifactId>
     <version>1.0.0-REL</version>
 </dependency>
 ```

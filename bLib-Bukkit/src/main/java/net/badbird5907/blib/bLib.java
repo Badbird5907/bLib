@@ -15,12 +15,12 @@ public class bLib {
     @Setter
     private static Plugin plugin;
     @Getter
-    @Setter
     private static CommandFramework commandFramework;
     public bLib(Plugin plugin,String prefix){
         instance = this;
         setPlugin(plugin);
         new Logger(plugin.getLogger(),prefix,"[DEBUG]");
         new Tasks(plugin);
+        commandFramework = new CommandFramework(plugin);
     }
 }

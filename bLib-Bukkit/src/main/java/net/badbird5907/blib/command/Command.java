@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * The command annotation used to designate methods as commands. All methods
  * should have a single CommandArgs argument
  * 
- * @author minnymin3
+ * @author minnymin3/Badbird5907/OctoPvP dev team
  * 
  */
 @Target(ElementType.METHOD)

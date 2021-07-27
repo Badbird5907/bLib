@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.badbird5907</groupId>
-    <artifactId>bLib</artifactId>
+    <artifactId>bLib-Parent</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0-REL</version>
     <description>A library for java (especially bukkit/spigot) devs.</description>
@@ -41,6 +41,7 @@
     <modules>
         <module>bLib-Bukkit</module>
         <module>bLib-Common</module>
+        <module>bLib</module>
     </modules>
 
     <properties>

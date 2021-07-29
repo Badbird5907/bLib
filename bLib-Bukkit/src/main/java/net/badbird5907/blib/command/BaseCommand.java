@@ -2,6 +2,7 @@ package net.badbird5907.blib.command;
 
 import net.badbird5907.blib.annotation.Disable;
 import net.badbird5907.blib.bLib;
+import net.badbird5907.blib.util.CC;
 import org.bukkit.plugin.Plugin;
 
 import java.util.List;
@@ -23,9 +24,7 @@ public abstract class BaseCommand {
         return usageMessage;
     }
 
-    public void setUsageMessage(String usageMessage) {
-    }
     public void sendUsage(Sender sender){
-        sender.sendMessage(this.getClass().getAnnotation(Command.class).usage());
+        sender.sendMessage(CC.translate(this.getClass().getAnnotation(Command.class).usage()));
     }
 }

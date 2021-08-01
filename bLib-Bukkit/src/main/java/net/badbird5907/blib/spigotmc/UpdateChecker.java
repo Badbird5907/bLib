@@ -13,24 +13,20 @@ import java.net.URL;
 import java.util.Scanner;
 
 public class UpdateChecker {
-    private int resourceId;
+	private int resourceId;
 
-    public UpdateChecker(int resourceId) {
-        this.resourceId = resourceId;
-    }
+	public UpdateChecker(int resourceId) {
+		this.resourceId = resourceId;
+	}
 
-    public void getVersion(final Consumer<String> consumer) {
-        if (resourceId == -1){
-            return;
-        }
-        Tasks.runAsync(()->{
-            try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + this.resourceId).openStream(); Scanner scanner = new Scanner(inputStream)) {
-                if (scanner.hasNext()) {
-                    consumer.accept(scanner.next());
-                }
-            } catch (IOException exception) {
-                bLib.getPlugin().getLogger().info("Cannot look for updates: " + exception.getMessage());
-            }
-        });
-    }
+	public void getVersion(final Consumer<String> consumer) {
+		if (resourceId == -1) return;
+		Tasks.runAsync(() -> {
+			try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + this.resourceId).openStream(); Scanner scanner = new Scanner(inputStream)) {
+				if (scanner.hasNext()) consumer.accept(scanner.next());
+			} catch (IOException exception) {
+				bLib.getPlugin().getLogger().info("Cannot look for updates: " + exception.getMessage());
+			}
+		});
+	}
 }

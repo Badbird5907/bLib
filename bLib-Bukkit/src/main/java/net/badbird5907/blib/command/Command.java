@@ -57,12 +57,13 @@ public @interface Command {
 	boolean playerOnly() default false;
 	/**
 	 * The cooldown in seconds
+	 *
 	 * @return cooldown
 	 */
 	int cooldown() default 0;
-
 	/**
-	 * wether to disable this command or not
+	 * Whether to disable this command or not
+	 *
 	 * @return disable
 	 */
 	boolean disable() default false;

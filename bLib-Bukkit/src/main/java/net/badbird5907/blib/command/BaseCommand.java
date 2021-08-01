@@ -8,23 +8,26 @@ import org.bukkit.plugin.Plugin;
 import java.util.List;
 
 public abstract class BaseCommand {
-    public BaseCommand(){
-        if (this.getClass().isAnnotationPresent(Disable.class))
-            return;
-        bLib.getCommandFramework().registerCommands(this);
-    }
-    public Plugin plugin = bLib.getPlugin();
-    public abstract CommandResult execute(Sender sender, String[] args);
-    public List<String> tabComplete(Sender sender, String[] args){
-        return null;
-    }
-    private String usageMessage = "";
+	public BaseCommand() {
+		if (this.getClass().isAnnotationPresent(Disable.class)) return;
+		bLib.getCommandFramework().registerCommands(this);
+	}
 
-    public String getUsageMessage() {
-        return usageMessage;
-    }
+	public Plugin plugin = bLib.getPlugin();
 
-    public void sendUsage(Sender sender){
-        sender.sendMessage(CC.translate(this.getClass().getAnnotation(Command.class).usage()));
-    }
+	public abstract CommandResult execute(Sender sender, String[] args);
+
+	public List<String> tabComplete(Sender sender, String[] args) {
+		return null;
+	}
+
+	private String usageMessage = "";
+
+	public String getUsageMessage() {
+		return usageMessage;
+	}
+
+	public void sendUsage(Sender sender) {
+		sender.sendMessage(CC.translate(this.getClass().getAnnotation(Command.class).usage()));
+	}
 }

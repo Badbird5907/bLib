@@ -16,131 +16,134 @@ import java.util.UUID;
 /**
  * extension of {@link CommandSender} to make stuff easier (ripped out of octopvp lmao)
  */
-public class Sender implements CommandSender  {
-    private CommandSender commandSender;
-    public Sender(CommandSender commandSender){
-        this.commandSender = commandSender;
-    }
-    @Override
-    public void sendMessage(String s) {
-        commandSender.sendMessage(s);
-    }
+public class Sender implements CommandSender {
+	private CommandSender commandSender;
 
-    @Override
-    public void sendMessage(String[] strings) {
-        for (String string : strings) {
-            commandSender.sendMessage(string);
-        }
-    }
+	public Sender(CommandSender commandSender) {
+		this.commandSender = commandSender;
+	}
 
-    @Override
-    public void sendMessage(UUID sender, String message) {
-        commandSender.sendMessage(sender,message);
-    }
+	@Override
+	public void sendMessage(String s) {
+		commandSender.sendMessage(s);
+	}
 
-    @Override
-    public void sendMessage(UUID sender, String[] messages) {
-        commandSender.sendMessage(sender,messages);
-    }
-    public void sendMessage(Object message,Object... placeholders){
-        commandSender.sendMessage(StringUtils.replacePlaceholders(message.toString(),placeholders));
-    }
+	@Override
+	public void sendMessage(String[] strings) {
+		for (String string : strings) commandSender.sendMessage(string);
+	}
 
-    @Override
-    public Server getServer() {
-        return commandSender.getServer();
-    }
+	@Override
+	public void sendMessage(UUID sender, String message) {
+		commandSender.sendMessage(sender, message);
+	}
 
-    @Override
-    public String getName() {
-        return commandSender.getName();
-    }
+	@Override
+	public void sendMessage(UUID sender, String[] messages) {
+		commandSender.sendMessage(sender, messages);
+	}
 
-    @Override
-    public Spigot spigot() {
-        return commandSender.spigot();
-    }
+	public void sendMessage(Object message, Object... placeholders){
+		commandSender.sendMessage(StringUtils.replacePlaceholders(message.toString(), placeholders));
+	}
 
-    @Override
-    public boolean isPermissionSet(String s) {
-        return commandSender.isPermissionSet(s);
-    }
+	@Override
+	public Server getServer() {
+		return commandSender.getServer();
+	}
 
-    @Override
-    public boolean isPermissionSet(Permission permission) {
-        return commandSender.isPermissionSet(permission);
-    }
+	@Override
+	public String getName() {
+		return commandSender.getName();
+	}
 
-    @Override
-    public boolean hasPermission(String s) {
-        return commandSender.hasPermission(s);
-    }
+	@Override
+	public Spigot spigot() {
+		return commandSender.spigot();
+	}
 
-    @Override
-    public boolean hasPermission(Permission permission) {
-        return commandSender.hasPermission(permission);
-    }
+	@Override
+	public boolean isPermissionSet(String s) {
+		return commandSender.isPermissionSet(s);
+	}
 
-    @Override
-    public PermissionAttachment addAttachment(Plugin plugin, String s, boolean b) {
-        return commandSender.addAttachment(plugin,s,b);
-    }
+	@Override
+	public boolean isPermissionSet(Permission permission) {
+		return commandSender.isPermissionSet(permission);
+	}
 
-    @Override
-    public PermissionAttachment addAttachment(Plugin plugin) {
-        return commandSender.addAttachment(plugin);
-    }
+	@Override
+	public boolean hasPermission(String s) {
+		return commandSender.hasPermission(s);
+	}
 
-    @Override
-    public PermissionAttachment addAttachment(Plugin plugin, String s, boolean b, int i) {
-        return commandSender.addAttachment(plugin,s,b,i);
-    }
+	@Override
+	public boolean hasPermission(Permission permission) {
+		return commandSender.hasPermission(permission);
+	}
 
-    @Override
-    public PermissionAttachment addAttachment(Plugin plugin, int i) {
-        return commandSender.addAttachment(plugin,i);
-    }
+	@Override
+	public PermissionAttachment addAttachment(Plugin plugin, String s, boolean b) {
+		return commandSender.addAttachment(plugin, s, b);
+	}
 
-    @Override
-    public void removeAttachment(PermissionAttachment permissionAttachment) {
-        commandSender.removeAttachment(permissionAttachment);
-    }
+	@Override
+	public PermissionAttachment addAttachment(Plugin plugin) {
+		return commandSender.addAttachment(plugin);
+	}
 
-    @Override
-    public void recalculatePermissions() {
-        commandSender.recalculatePermissions();
-    }
+	@Override
+	public PermissionAttachment addAttachment(Plugin plugin, String s, boolean b, int i) {
+		return commandSender.addAttachment(plugin, s, b, i);
+	}
 
-    @Override
-    public Set<PermissionAttachmentInfo> getEffectivePermissions() {
-        return commandSender.getEffectivePermissions();
-    }
+	@Override
+	public PermissionAttachment addAttachment(Plugin plugin, int i) {
+		return commandSender.addAttachment(plugin, i);
+	}
 
-    @Override
-    public boolean isOp() {
-        return commandSender.isOp();
-    }
+	@Override
+	public void removeAttachment(PermissionAttachment permissionAttachment) {
+		commandSender.removeAttachment(permissionAttachment);
+	}
 
-    @Override
-    public void setOp(boolean b) {
-        commandSender.setOp(b);
-    }
-    public Player getPlayer(){
-        try{
-            return Bukkit.getPlayer(getName());
-        } catch (Exception e) {
-            return null;
-        }
-    }
-    public String getDisplayName(){
-        return getPlayer() == null ? "CONSOLE" : getPlayer().getDisplayName();
-    }
+	@Override
+	public void recalculatePermissions() {
+		commandSender.recalculatePermissions();
+	}
 
-    public CommandSender getCommandSender() {
-        return this.commandSender;
-    }
+	@Override
+	public Set<PermissionAttachmentInfo> getEffectivePermissions() {
+		return commandSender.getEffectivePermissions();
+	}
 
-    public void setCommandSender(CommandSender commandSender) {
-        this.commandSender = commandSender;
-    }
+	@Override
+	public boolean isOp() {
+		return commandSender.isOp();
+	}
+
+	@Override
+	public void setOp(boolean b) {
+		commandSender.setOp(b);
+	}
+
+	public Player getPlayer() {
+		try {
+			return Bukkit.getPlayer(getName());
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public String getDisplayName() {
+		return (getPlayer() == null) ? "CONSOLE" : getPlayer().getDisplayName();
+	}
+
+	public CommandSender getCommandSender() {
+		return this.commandSender;
+	}
+
+	public void setCommandSender(CommandSender commandSender) {
+		this.commandSender = commandSender;
+	}
 }

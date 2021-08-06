@@ -111,6 +111,10 @@ public class CommandFramework implements CommandExecutor {
 					CommandResult result = (CommandResult) method.invoke(methodObject, new Sender(sender), args);
 					if(result == CommandResult.SUCCESS)
 						return true;
+					if (result == CommandResult.INVALID_ARGS){
+						sender.sendMessage(CC.translate(command.usage()));
+						return true;
+					}
 					else if(result == null){
 						return true;
 					}

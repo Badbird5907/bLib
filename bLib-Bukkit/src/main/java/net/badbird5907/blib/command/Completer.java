@@ -17,7 +17,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Completer {
-
 	/**
 	 * The command that this completer completes. If it is a sub command then
 	 * its values would be separated by periods. ie. a command that would be a
@@ -34,5 +33,4 @@ public @interface Completer {
 	 * @return aliases
 	 */
 	String[] aliases() default {};
-
 }

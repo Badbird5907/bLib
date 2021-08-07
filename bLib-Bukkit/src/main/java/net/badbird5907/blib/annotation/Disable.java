@@ -9,5 +9,5 @@ import java.lang.annotation.RetentionPolicy;
  * Disables a command
  */
 public @interface Disable {
-    String reason() default "";
+	String reason() default "";
 }

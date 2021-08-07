@@ -7,17 +7,21 @@ import java.util.*;
 public interface PairMap<K, V, M> {
 	interface Entry<K, V, M> {
 		K getKey();
+
 		V getValue1();
+
 		M getValue2();
 	}
 
 	Set<Entry<K,V,M>> entrySet();
+
 	Set<Pair<V,M>> values();
+
 	Set<K> keySet();
 
 	void clear();
 
-	void putAll(PairMap<? extends K,? extends V,? extends M > e);
+	void putAll(PairMap<? extends K, ? extends V, ? extends M > e);
 
 	V remove(Object k);
 

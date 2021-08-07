@@ -5,5 +5,5 @@ package net.badbird5907.blib.objects;
  * @param <A>
  */
 public interface TypeCallback<A> {
-    A call();
+	A call();
 }

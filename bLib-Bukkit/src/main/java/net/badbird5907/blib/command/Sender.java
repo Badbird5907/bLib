@@ -57,8 +57,8 @@ public class Sender implements CommandSender  {
     }
 
     @Override
-    public Spigot spigot() {
-        return commandSender.spigot();
+    public Player.Spigot spigot() {
+        return commandSender.spi();
     }
 
     @Override

@@ -7,13 +7,15 @@
     <groupId>net.badbird5907</groupId>
     <artifactId>bLib-Parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.1-REL</version>
+    <version>2.1.0-REL</version>
     <name>bLib</name>
 
     <modules>
         <module>bLib-Bukkit</module>
         <module>bLib-Common</module>
+        <module>bLib-Bungee</module>
         <module>bLib</module>
+        <module>bLib-ServerCommons</module>
     </modules>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -74,6 +76,9 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
+                        <configuration>
+                            <failOnError>false</failOnError>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

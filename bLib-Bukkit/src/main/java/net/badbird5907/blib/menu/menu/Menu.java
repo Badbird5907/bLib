@@ -115,7 +115,7 @@ public abstract class Menu {
         Inventory current = player.getOpenInventory().getTopInventory();
 
         if (currentlyOpenedMenu != null && CC.translate(currentlyOpenedMenu.getName(player))
-                .equals(current.getTitle()) && current.getSize() == this.getInventorySize(this.buttons)) {
+                .equals(player.getOpenInventory().getTitle()) && current.getSize() == this.getInventorySize(this.buttons)) {
             inventory = current;
             passed = true;
         }
@@ -128,7 +128,7 @@ public abstract class Menu {
          * TemporaryInventory
          * Used to prevent item flickering because 'inventory' is live player inventory
          */
-        Inventory temporaryInventory = Bukkit.createInventory(player, inventory.getSize(), inventory.getTitle());
+        Inventory temporaryInventory = Bukkit.createInventory(player, inventory.getSize(), player.getOpenInventory().getTitle());
 
         this.buttons.forEach(slot -> {
             temporaryInventory.setItem(slot.getSlot(), slot.getItem(player));

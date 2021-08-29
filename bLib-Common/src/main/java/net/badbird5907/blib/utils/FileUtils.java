@@ -1,7 +1,11 @@
 package net.badbird5907.blib.utils;
 
+import com.google.gson.Gson;
+import lombok.SneakyThrows;
+
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -16,5 +20,17 @@ public class FileUtils {
             e.printStackTrace();
         }
         return contentBuilder.toString();
+    }
+    public static void printObjectToFile(File file, Object o){
+        printObjectToFile(file, o,new Gson());
+    }
+    @SneakyThrows
+    public static void printObjectToFile(File file, Object o,Gson gson){
+        if (!file.exists()){
+            file.createNewFile();
+        }
+        PrintStream ps = new PrintStream(file);
+        ps.print(gson.toJson(o));
+        ps.close();
     }
 }

@@ -404,7 +404,7 @@ public class ItemBuilder {
      * @param unbreakable If it should be unbreakable
      */
     public ItemBuilder unbreakable(boolean unbreakable) {
-        meta.spigot().setUnbreakable(unbreakable);
+        meta.setUnbreakable(unbreakable);
         return this;
     }
 
@@ -1006,7 +1006,7 @@ public class ItemBuilder {
         public ItemStack buildSkull() {
             // Build the stack first, edit to make sure it's a skull
             ItemStack skull = stackBuilder
-                    .material(Material.SKULL_ITEM)
+                    .material(Material.PLAYER_HEAD)
                     .data(3)
                     .build();
 

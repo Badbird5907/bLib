@@ -1,6 +1,7 @@
 package net.badbird5907.blib.menu.buttons;
 
 import net.badbird5907.blib.util.ItemBuilder;
+import net.badbird5907.blib.util.XMaterial;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -40,7 +41,7 @@ public abstract class Button {
 
             @Override
             public ItemStack getItem(Player player) {
-                return new ItemBuilder(Material.STAINED_GLASS_PANE).durability((short) 7).build();
+                return new ItemBuilder(XMaterial.GRAY_STAINED_GLASS_PANE.parseMaterial()).durability((short) 7).build();
             }
 
             @Override

@@ -27,9 +27,15 @@ public class bLib {
         instance = this;
         setPlugin(plugin);
         new Logger(plugin.getLogger(),prefix,"[DEBUG]");
-        new Tasks(plugin);
+        Tasks.init(plugin);
         commandFramework = new CommandFramework(plugin);
-        registerListener(MenuListener.class);
+        plugin.getServer().getPluginManager().registerEvents(new MenuListener(),plugin);
+    }
+    public static bLib create(Plugin plugin){
+        return new bLib(plugin,"");
+    }
+    public static bLib create(Plugin plugin,String prefix){
+        return new bLib(plugin,prefix);
     }
     @SneakyThrows
     public void registerListenersInPackage(String p){

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -16,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @param <M> value2
  */
 public class HashPairMap<K,V,M> implements PairMap{
-    Map<K, Pair<V,M>> base = new HashMap<>();
+    Map<K, Pair<V,M>> base = new ConcurrentHashMap<>();
     transient Set<Entry<K,V,M>> entrySet;
 
     @Override

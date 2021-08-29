@@ -25,7 +25,7 @@ public class PlaceholderButton extends Button{
     public ItemStack getItem(Player player) {
         if (VersionUtil.over1_13())
             return new ItemBuilder(XMaterial.GRAY_STAINED_GLASS_PANE.parseMaterial()).name(CC.GRAY).build();
-        else return new ItemBuilder(Material.STAINED_GLASS_PANE).durability((short)7).name(CC.GRAY).build();
+        else return new ItemBuilder(Material.LEGACY_STAINED_GLASS_PANE).durability((short)7).name(CC.GRAY).build();
     }
 
     @Override

@@ -1,7 +1,7 @@
 package net.badbird5907.blib.menu;
 
 import net.badbird5907.blib.menu.buttons.Button;
-import net.octopvp.octocore.paper.utils.menu.menu.Menu;
+import net.badbird5907.blib.menu.menu.Menu;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

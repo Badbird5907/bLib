@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -17,7 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @param <A> value 3
  */
 public class HashTriMap<K,V,M,A> implements TriMap {
-    Map<K, Triplet<V,M,A>> base = new HashMap<>();
+    Map<K, Triplet<V,M,A>> base = new ConcurrentHashMap<>();
     transient Set<Entry<K,V,M,A>> entrySet;
 
     @Override

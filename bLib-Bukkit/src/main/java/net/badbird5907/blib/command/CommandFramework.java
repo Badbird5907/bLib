@@ -112,7 +112,7 @@ public class CommandFramework implements CommandExecutor {
 					if(result == CommandResult.SUCCESS)
 						return true;
 					if (result == CommandResult.INVALID_ARGS){
-						sender.sendMessage(CC.translate(command.usage()));
+						sender.sendMessage(CC.RED + "Usage: /" + command.name() + CC.translate(command.usage().replace("Usage: /" + command.name() + " ","")));
 						return true;
 					}
 					else if(result == null){

@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * extension of {@link CommandSender} to make stuff easier (ripped out of octopvp lmao)
+ * extension of {@link CommandSender} to make stuff (placeholders in messages) easier (ripped out of octopvp lmao)
  */
 public class Sender implements CommandSender  {
     private CommandSender commandSender;

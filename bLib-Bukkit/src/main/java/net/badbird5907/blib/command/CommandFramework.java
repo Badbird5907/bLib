@@ -1,8 +1,10 @@
 package net.badbird5907.blib.command;
 
 import net.badbird5907.blib.bLib;
-import net.badbird5907.blib.util.*;
+import net.badbird5907.blib.util.Cooldown;
+import net.badbird5907.blib.util.ReflectionUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
@@ -36,12 +38,19 @@ public class CommandFramework implements CommandExecutor {
 	private CommandMap map;
 	private Plugin plugin;
 
+	private static CommandFramework instance;
+
+	public static CommandFramework getInstance() {
+		return instance;
+	}
+
 	/**
 	 * Initializes the command framework and sets up the command maps
 	 * @param plugin {@link Plugin}
 	 */
 	public CommandFramework(Plugin plugin) {
 		this.plugin = plugin;
+		instance = this;
 		if (plugin.getServer().getPluginManager() instanceof SimplePluginManager) {
 			SimplePluginManager manager = (SimplePluginManager) plugin.getServer().getPluginManager();
 			try {
@@ -81,12 +90,12 @@ public class CommandFramework implements CommandExecutor {
 				Command command = method.getAnnotation(Command.class);
 				if (!command.permission().equals(""))
 					if (!sender.hasPermission(command.permission())) {
-						sender.sendMessage(CC.RED + "You do not have permission to execute this command!");
+						sender.sendMessage(ChatColor.RED + "You do not have permission to execute this command!");
 						return true;
 					}
 				if (command.playerOnly()) {
 					if(!(sender instanceof Player)){
-						sender.sendMessage(CC.RED + "This command is player only!");
+						sender.sendMessage(ChatColor.RED + "This command is player only!");
 						return true;
 					}
 				}
@@ -96,7 +105,7 @@ public class CommandFramework implements CommandExecutor {
 						Player p = (Player) sender;
 						//They are currently on cooldown
 						if(Cooldown.isOnCooldown(command.name() + "|cmd_cooldown", p.getUniqueId())){
-							p.sendMessage(CC.RED + "You are currently on cooldown for this command! You may try again in " + CC.GOLD + Cooldown.getCooldownForPlayerInt(command.name() + "|cmd_cooldown",p.getUniqueId()));
+							p.sendMessage(ChatColor.RED + "You are currently on cooldown for this command! You may try again in " + ChatColor.GOLD + Cooldown.getCooldownForPlayerInt(command.name() + "|cmd_cooldown",p.getUniqueId()));
 							return true;
 						}
 						//They used to have a cooldown
@@ -112,7 +121,7 @@ public class CommandFramework implements CommandExecutor {
 					if(result == CommandResult.SUCCESS)
 						return true;
 					if (result == CommandResult.INVALID_ARGS){
-						sender.sendMessage(CC.RED + "Usage: /" + command.name() + CC.translate(command.usage().replace("Usage: /" + command.name() + " ","")));
+						sender.sendMessage(ChatColor.RED + "Usage: /" + command.name() + ChatColor.translateAlternateColorCodes('&',command.usage().replace("Usage: /" + command.name() + " ","")));
 						return true;
 					}
 					else if(result == null){
@@ -132,7 +141,7 @@ public class CommandFramework implements CommandExecutor {
 				return true;
 			}
 		}
-		sender.sendMessage(CC.RED + "Unhandled command! Please report this to the plugin author! (With the stack trace that has been printed in console.)");
+		sender.sendMessage(ChatColor.RED + "Unhandled command! Please report this to the plugin author! (With the stack trace that has been printed in console.)");
 		Thread.dumpStack();
 		return true;
 	}
@@ -147,7 +156,7 @@ public class CommandFramework implements CommandExecutor {
 			if (m.getAnnotation(Command.class) != null) {
 				Command command = m.getAnnotation(Command.class);
 				if (m.getParameterTypes().length > 2 || m.getParameterTypes()[0] != Sender.class || m.getParameterTypes()[1] != String[].class) {
-					Logger.error("Unable to register command %1. Unexpected method arguments",m.getName());
+					Bukkit.getLogger().severe("Unable to register command \"" + m.getName() + "\". Unexpected method arguments");
 					continue;
 				}
 				registerCommand(command, command.name(), m, obj);
@@ -158,11 +167,11 @@ public class CommandFramework implements CommandExecutor {
 				Completer comp = m.getAnnotation(Completer.class);
 				if (m.getParameterTypes().length > 2 || m.getParameterTypes().length == 0
 						|| m.getParameterTypes()[0] != Sender.class || m.getParameterTypes()[1] != String[].class) {
-					Logger.error("Unable to register tab completer %1. Unexpected method arguments",m.getName());
+					Bukkit.getLogger().severe("Unable to register tab completer \"" + m.getName() + "\". Unexpected method arguments");
 					continue;
 				}
 				if (m.getReturnType() != List.class) {
-					Logger.error("Unable to register tab completer %1. Unexpected return type",m.getName());
+					Bukkit.getLogger().severe("Unable to register tab completer \"" + m.getName() + "\". Unexpected return type");
 					continue;
 				}
 				registerCompleter(comp.name(), m, obj);
@@ -243,7 +252,7 @@ public class CommandFramework implements CommandExecutor {
 					BukkitCompleter completer = (BukkitCompleter) field.get(command);
 					completer.addCompleter(label, m, obj);
 				} else {
-					Logger.error("Unable to register tab completer " + m.getName()
+					Bukkit.getLogger().severe("Unable to register tab completer " + m.getName()
 							+ ". A tab completer is already registered for that command!");
 				}
 			} catch (Exception ex) {
@@ -253,10 +262,15 @@ public class CommandFramework implements CommandExecutor {
 	}
 	private static void registerPermission(String name, String desc){
         Permission perm = new Permission(name, desc);
-        if(!PermissionUtils.getRegisteredPermissionsString().contains(name)) {
+        if(!getRegisteredPermissionsString().contains(name)) {
             Bukkit.getPluginManager().getPermissions().add(perm);
         }
     }
+	private static Set<String> getRegisteredPermissionsString(){
+		Set<String> permissions = new HashSet<>();
+		Bukkit.getPluginManager().getPermissions().forEach(perm -> permissions.add(perm.getName()));
+		return permissions;
+	}
     public void registerCommandsInPackage(String packageName){
 		ReflectionUtils.getClassesInPackage(bLib.getPlugin(),packageName).forEach(clazz ->{
 			if(BaseCommand.class.isAssignableFrom(clazz) && clazz.getSuperclass() == BaseCommand.class){

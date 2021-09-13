@@ -23,19 +23,19 @@ public class Sender implements CommandSender  {
     }
     @Override
     public void sendMessage(String s) {
-        commandSender.sendMessage(s);
+        commandSender.sendMessage(CC.translate(s));
     }
 
     @Override
     public void sendMessage(String[] strings) {
         for (String string : strings) {
-            commandSender.sendMessage(string);
+            commandSender.sendMessage(CC.translate(string));
         }
     }
 
     @Override
     public void sendMessage(UUID sender, String message) {
-        commandSender.sendMessage(sender,message);
+        commandSender.sendMessage(sender,CC.translate(message));
     }
 
     @Override
@@ -43,7 +43,7 @@ public class Sender implements CommandSender  {
         commandSender.sendMessage(sender,messages);
     }
     public void sendMessage(Object message,Object... placeholders){
-        commandSender.sendMessage(StringUtils.replacePlaceholders(message.toString(),placeholders));
+        commandSender.sendMessage(StringUtils.replacePlaceholders(CC.translate(message.toString()),placeholders));
     }
 
     @Override

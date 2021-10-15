@@ -24,3 +24,21 @@ implementation 'net.badbird5907:bLib:2.1.0-REL'
 ```kotlin
 implementation("net.badbird5907:bLib:2.1.0-REL")
 ```
+## Usage (Bukkit)
+```java
+public class YourPlugin extends JavaPlugin {
+    @Override
+    public void onEnable(){
+        bLib.create(this); //that's it...
+        //OPTIONAL:
+        bLib.getCommandFramework().registerCommandsInPackage("your.commands.package.here");
+        //Creating an itemstack
+        //XMaterial is for backwards compatability for versions
+        ItemStack itemStack = 
+                new ItemBuilder(XMaterial.STICK.parseMaterial())
+                        .name(CC.GOLD + "KB Stick")
+                        .enchant(Enchantment.KNOCKBACK,100)
+                        .build();
+    }
+}
+```

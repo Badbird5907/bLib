@@ -36,6 +36,7 @@ public class bLib {
         plugin.getServer().getPluginManager().registerEvents(new MenuListener(),plugin);
         Glow.init(plugin);
     }
+    @Deprecated
     public bLib setAutoCompleteCommands(boolean b){
         autoCompleteCommandsFromUsage = b;
         return this;

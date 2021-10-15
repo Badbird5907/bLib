@@ -1,5 +1,11 @@
 # bLib
 bLib is a library I have made to help ease java development, especially development of spigot/bukkit plugins.
+## Quick links
+[Bukkit/Spigot/Paper Library](https://github.com/Badbird-5907/bLib/tree/master/bLib-Bukkit/src/main/java/net/badbird5907/blib)
+[Menu framework](https://github.com/Badbird-5907/bLib/tree/master/bLib-Bukkit/src/main/java/net/badbird5907/blib/menu)
+[Command framework](https://github.com/Badbird-5907/bLib/tree/master/bLib-Bukkit/src/main/java/net/badbird5907/blib/command)
+[Commons](https://github.com/Badbird-5907/bLib/tree/master/bLib-Common/src/main/java/net/badbird5907/blib)
+[Bukkit/Bungee Commons](https://github.com/Badbird-5907/bLib/tree/master/bLib-ServerCommons/src/main/java/net/badbird5907/blib/util)
 ## Dependency
 ### Maven
 ```xml

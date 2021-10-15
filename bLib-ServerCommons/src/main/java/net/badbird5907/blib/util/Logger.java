@@ -18,13 +18,13 @@ public class Logger {
         instance = this;
     }
     public static void info(Object str,Object... placeholders){
-        instance.actualLogger.info(StringUtils.replacePlaceholders(prefix + " " + str,placeholders));
+        instance.actualLogger.info(CC.translate(StringUtils.replacePlaceholders(prefix + " " + str,placeholders)));
     }
     public static void warn(Object str,Object... placeholders){
-        instance.actualLogger.warning(StringUtils.replacePlaceholders(prefix + " " + str,placeholders));
+        instance.actualLogger.warning(CC.translate(StringUtils.replacePlaceholders(prefix + " " + str,placeholders)));
     }
     public static void error(Object str,Object... placeholders){
-        instance.actualLogger.severe(StringUtils.replacePlaceholders(prefix + " " + str,placeholders));
+        instance.actualLogger.severe(CC.translate(StringUtils.replacePlaceholders(prefix + " " + str,placeholders)));
     }
     public static void severe(Object str,Object... placeholders){
         error(str, placeholders);

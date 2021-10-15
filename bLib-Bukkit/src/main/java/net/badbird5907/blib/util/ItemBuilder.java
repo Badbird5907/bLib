@@ -3,10 +3,12 @@ package net.badbird5907.blib.util;
 import com.google.gson.Gson;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import net.badbird5907.blib.bLib;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -40,7 +42,7 @@ public class ItemBuilder {
     private String displayname;
     private List<String> lore = new ArrayList<>();
     private List<ItemFlag> flags = new ArrayList<>();
-    private boolean wrapLore = true;
+    private boolean wrapLore = true,glow = false;
     private int wrapSize = 30;
 
     private boolean andSymbol = true;
@@ -408,10 +410,11 @@ public class ItemBuilder {
         return this;
     }
 
-    /** Makes the ItemStack Glow like it had a Enchantment */
+    /** Makes the ItemStack Glow like it had an Enchantment */
     public ItemBuilder glow() {
-        enchant(material != Material.BOW ? Enchantment.ARROW_INFINITE : Enchantment.LUCK, 10);
-        flag(ItemFlag.HIDE_ENCHANTS);
+        //enchant(material != Material.BOW ? Enchantment.ARROW_INFINITE : Enchantment.LUCK, 1);
+        //flag(ItemFlag.HIDE_ENCHANTS);
+        this.glow = true;
         return this;
     }
 
@@ -667,6 +670,11 @@ public class ItemBuilder {
             for (ItemFlag f : flags) {
                 meta.addItemFlags(f);
             }
+        }
+        if (glow){
+            NamespacedKey key = new NamespacedKey(bLib.getPlugin(), "glow");
+            Glow glow = new Glow(key);
+            meta.addEnchant(glow,1,true);
         }
         item.setItemMeta(meta);
         return item;

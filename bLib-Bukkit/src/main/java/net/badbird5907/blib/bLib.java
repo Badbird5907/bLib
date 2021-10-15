@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import net.badbird5907.blib.command.CommandFramework;
 import net.badbird5907.blib.menu.MenuListener;
+import net.badbird5907.blib.util.Glow;
 import net.badbird5907.blib.util.Logger;
 import net.badbird5907.blib.util.ReflectionUtils;
 import net.badbird5907.blib.util.Tasks;
@@ -22,6 +23,9 @@ public class bLib {
     @Setter
     private static Plugin plugin;
     @Getter
+    @Setter
+    private static boolean autoCompleteCommandsFromUsage = false;
+    @Getter
     private static CommandFramework commandFramework;
     public bLib(Plugin plugin,String prefix){
         instance = this;
@@ -30,6 +34,11 @@ public class bLib {
         Tasks.init(plugin);
         commandFramework = new CommandFramework(plugin);
         plugin.getServer().getPluginManager().registerEvents(new MenuListener(),plugin);
+        Glow.init(plugin);
+    }
+    public bLib setAutoCompleteCommands(boolean b){
+        autoCompleteCommandsFromUsage = b;
+        return this;
     }
     public static bLib create(Plugin plugin){
         return new bLib(plugin,"");
@@ -45,7 +54,7 @@ public class bLib {
     }
     @SneakyThrows
     public void registerListener(Class clazz){
-        if (clazz.isAssignableFrom(Listener.class))
+        if (Listener.class.isAssignableFrom(clazz))
             Bukkit.getPluginManager().registerEvents((Listener) clazz.newInstance(),plugin);
     }
 }

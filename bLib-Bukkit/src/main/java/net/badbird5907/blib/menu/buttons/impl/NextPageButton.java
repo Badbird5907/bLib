@@ -5,6 +5,7 @@ import net.badbird5907.blib.menu.buttons.Button;
 import net.badbird5907.blib.menu.menu.PaginatedMenu;
 import net.badbird5907.blib.util.CC;
 import net.badbird5907.blib.util.ItemBuilder;
+import net.badbird5907.blib.util.XMaterial;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -16,7 +17,7 @@ public class NextPageButton extends Button {
 
     @Override
     public ItemStack getItem(Player player) {
-        ItemBuilder item = new ItemBuilder(Material.ARROW);
+        ItemBuilder item = new ItemBuilder(XMaterial.ARROW.parseItem());
         if (this.paginatedMenu.getPage() < this.paginatedMenu.getPages(player)) { //next page
             item.lore(
                     CC.GREEN + "Click to go to the next page"

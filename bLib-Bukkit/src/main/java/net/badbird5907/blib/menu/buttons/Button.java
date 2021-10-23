@@ -2,7 +2,6 @@ package net.badbird5907.blib.menu.buttons;
 
 import net.badbird5907.blib.util.ItemBuilder;
 import net.badbird5907.blib.util.XMaterial;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;

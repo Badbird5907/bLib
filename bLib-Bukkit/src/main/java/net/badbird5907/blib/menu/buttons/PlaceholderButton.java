@@ -4,8 +4,6 @@ import net.badbird5907.blib.menu.menu.Menu;
 import net.badbird5907.blib.util.CC;
 import net.badbird5907.blib.util.ItemBuilder;
 import net.badbird5907.blib.util.XMaterial;
-import net.badbird5907.blib.version.VersionUtil;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -23,9 +21,7 @@ public class PlaceholderButton extends Button{
     public PlaceholderButton(){}
     @Override
     public ItemStack getItem(Player player) {
-        if (VersionUtil.over1_13())
-            return new ItemBuilder(XMaterial.GRAY_STAINED_GLASS_PANE.parseMaterial()).name(CC.GRAY).build();
-        else return new ItemBuilder(Material.LEGACY_STAINED_GLASS_PANE).durability((short)7).name(CC.GRAY).build();
+        return new ItemBuilder(XMaterial.GRAY_STAINED_GLASS_PANE.parseItem()).name(CC.GRAY).build();
     }
 
     @Override

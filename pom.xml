@@ -7,7 +7,7 @@
     <groupId>net.badbird5907</groupId>
     <artifactId>bLib-Parent</artifactId>
     <packaging>pom</packaging>
-    <version>2.1.0-REL</version>
+    <version>2.1.1-REL</version>
     <name>bLib</name>
 
     <modules>

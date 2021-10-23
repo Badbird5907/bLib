@@ -15,8 +15,8 @@ import java.util.function.Consumer;
 @SuppressWarnings({"unused", "FieldAccessedSynchronizedAndUnsynchronized"})
 public class Tasks <T> {
     private static Plugin plugin;
-    public static void init(Plugin plugin){
-        plugin = plugin;
+    public static void init(Plugin plugin1){
+        plugin = plugin1;
     }
 
     public static void run( Runnable callable) {

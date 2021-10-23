@@ -1,15 +1,15 @@
 package net.badbird5907.blib.command;
 
+import net.badbird5907.blib.bLib;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
@@ -51,6 +51,42 @@ public class BukkitCompleter implements TabCompleter {
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				}
+			}else if (bLib.isAutoCompleteCommandsFromUsage() && CommandFramework.getInstance().getOtherMap().containsKey(cmdLabel.toLowerCase())){
+				net.badbird5907.blib.command.Command command1 = CommandFramework.getInstance().getOtherMap().get(cmdLabel.toLowerCase());
+				if (!command1.usage().isEmpty()){
+					String[] options = command1.usage().split("\\s+");
+					int already = args.length;
+					List<String> list = new ArrayList<>();
+					int index = 0;
+					for (String option : options) {
+						index++;
+						if (index < already)
+							continue;
+						if (option.startsWith("<") && option.endsWith(">")){
+							String[] options1 = option.replace("<","").replace(">","").split("/");
+							for (String s : options1) {
+								if (s.equalsIgnoreCase("player")){
+									for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+										list.add(onlinePlayer.getName());
+									}
+								}else list.add(s);
+							}
+						}else{
+							if (option.startsWith("[") && option.endsWith("]")){
+								String[] options1 = option.replace("[","").replace("]","").split("/");
+								for (String s : options1) {
+									if (s.equalsIgnoreCase("player")){
+										for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+											list.add(onlinePlayer.getName());
+										}
+									}else list.add(s);
+								}
+							}
+
+						}
+					}
+					return list;
 				}
 			}
 		}

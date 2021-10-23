@@ -1,5 +1,6 @@
 package net.badbird5907.blib.command;
 
+import lombok.Getter;
 import net.badbird5907.blib.bLib;
 import net.badbird5907.blib.util.Cooldown;
 import net.badbird5907.blib.util.ReflectionUtils;
@@ -33,8 +34,8 @@ import java.util.Map.Entry;
  * 
  */
 public class CommandFramework implements CommandExecutor {
-
 	private Map<String, Entry<Method, Object>> commandMap = new HashMap<>();
+	private Map<String,Command> otherMap = new HashMap<>();
 	private CommandMap map;
 	private Plugin plugin;
 
@@ -121,7 +122,7 @@ public class CommandFramework implements CommandExecutor {
 					if(result == CommandResult.SUCCESS)
 						return true;
 					if (result == CommandResult.INVALID_ARGS){
-						sender.sendMessage(ChatColor.RED + "Usage: /" + command.name() + ChatColor.translateAlternateColorCodes('&',command.usage().replace("Usage: /" + command.name() + " ","")));
+						sender.sendMessage(ChatColor.RED + "Usage: /" + command.name() + " " + ChatColor.translateAlternateColorCodes('&',command.usage().replace("Usage: /" + command.name() + " ","")));
 						return true;
 					}
 					else if(result == null){
@@ -202,6 +203,7 @@ public class CommandFramework implements CommandExecutor {
 	public void registerCommand(Command command, String label, Method m, Object obj) {
 		if(command.disable())
 			return;
+		otherMap.put(label.toLowerCase(),command);
 		commandMap.put(label.toLowerCase(), new AbstractMap.SimpleEntry<>(m, obj));
 		commandMap.put(this.plugin.getName() + ':' + label.toLowerCase(), new AbstractMap.SimpleEntry<>(m, obj));
 		String cmdLabel = label.split("\\.")[0].toLowerCase();
@@ -283,5 +285,9 @@ public class CommandFramework implements CommandExecutor {
 				registerCommands(clazz);
 			}
 		});
+	}
+
+	public Map<String, Command> getOtherMap() {
+		return otherMap;
 	}
 }

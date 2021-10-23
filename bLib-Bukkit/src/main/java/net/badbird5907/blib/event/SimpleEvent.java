@@ -1,11 +1,18 @@
 package net.badbird5907.blib.event;
 
+import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public abstract class SimpleEvent extends Event {
+public class SimpleEvent extends Event {
+    @Getter
+    private static final HandlerList handlerList = new HandlerList();
     @Override
     public HandlerList getHandlers() {
-        return new HandlerList();
+        return handlerList;
+    }
+    public void call(){
+        Bukkit.getPluginManager().callEvent(this);
     }
 }

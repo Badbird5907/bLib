@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -36,13 +37,12 @@ public class ItemBuilder {
     private ItemMeta meta;
     private Material material = Material.STONE;
     private int amount = 1;
-    private MaterialData data;
     private short damage = 0;
     private Map<Enchantment, Integer> enchantments = new HashMap<>();
     private String displayname;
     private List<String> lore = new ArrayList<>();
     private List<ItemFlag> flags = new ArrayList<>();
-    private boolean wrapLore = true,glow = false;
+    private boolean wrapLore = true,glow = false,hideAttributes = false;
     private int wrapSize = 30;
 
     private boolean andSymbol = true;
@@ -107,7 +107,6 @@ public class ItemBuilder {
         this.item = item;
         this.material = item.getType();
         this.amount = item.getAmount();
-        this.data = item.getData();
         this.damage = item.getDurability();
         this.enchantments = item.getEnchantments();
 
@@ -116,6 +115,7 @@ public class ItemBuilder {
             this.displayname = item.getItemMeta().getDisplayName();
             this.lore = item.getItemMeta().getLore();
             for (ItemFlag f : item.getItemMeta().getItemFlags()) {
+                System.out.println(f);
                 flags.add(f);
             }
         }
@@ -146,8 +146,6 @@ public class ItemBuilder {
         this.material = builder.material;
         this.amount = builder.amount;
         this.damage = builder.damage;
-        this.data = builder.data;
-        this.damage = builder.damage;
         this.enchantments = builder.enchantments;
         this.displayname = builder.displayname;
         this.lore = builder.lore;
@@ -165,18 +163,6 @@ public class ItemBuilder {
         this.amount = amount;
         return this;
     }
-
-    /**
-     * Sets the {@link MaterialData} of the ItemStack
-     *
-     * @param data MaterialData for the ItemStack
-     */
-    public ItemBuilder data(MaterialData data) {
-        Validate.notNull(data, "The data is null.");
-        this.data = data;
-        return this;
-    }
-
     /**
      * Sets the Damage of the ItemStack
      *
@@ -378,6 +364,10 @@ public class ItemBuilder {
         lore.set(index, andSymbol ? ChatColor.translateAlternateColorCodes('&', line) : line);
         return this;
     }
+    public ItemBuilder hideAttributes(boolean b){
+        this.hideAttributes = b;
+        return this;
+    }
 
     /**
      * Adds a {@link ItemFlag} to the ItemStack
@@ -545,10 +535,6 @@ public class ItemBuilder {
         return meta;
     }
 
-    /** Returns the MaterialData */
-    public MaterialData getData() {
-        return data;
-    }
 
     /**
      * Returns all Lores
@@ -611,6 +597,7 @@ public class ItemBuilder {
         return new Gson().toJson(builder);
     }
 
+
     /**
      * Converts the JsonItemBuilder back to a ItemBuilder
      *
@@ -632,8 +619,6 @@ public class ItemBuilder {
             return b;
         if (b.displayname != null)
             displayname = b.displayname;
-        if (b.data != null)
-            data = b.data;
         if (b.material != null)
             material = b.material;
         if (b.lore != null)
@@ -655,9 +640,6 @@ public class ItemBuilder {
         item.setAmount(amount);
         item.setDurability(damage);
         meta = item.getItemMeta();
-        if (data != null) {
-            item.setData(data);
-        }
         if (enchantments.size() > 0) {
             item.addUnsafeEnchantments(enchantments);
         }
@@ -672,6 +654,8 @@ public class ItemBuilder {
                 meta.addItemFlags(f);
             }
         }
+        if (hideAttributes)
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         if (glow){
             NamespacedKey key = new NamespacedKey(bLib.getPlugin(), "glow");
             Glow glow = new Glow(key);

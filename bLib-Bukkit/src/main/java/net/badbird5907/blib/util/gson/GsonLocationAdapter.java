@@ -8,6 +8,10 @@ import org.bukkit.World;
 import java.lang.reflect.Type;
 import java.util.UUID;
 
+/**
+ * use {@link ConfigurationSerializableAdapter} instead
+ */
+@Deprecated
 public class GsonLocationAdapter implements JsonDeserializer<Location>, JsonSerializer<Location> {
     public static final GsonLocationAdapter INSTANCE = new GsonLocationAdapter();
     @Override

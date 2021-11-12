@@ -7,7 +7,7 @@ public class Cooldown {
     private static HashMap<String, HashMap<UUID, Long>> cooldown = new HashMap<>();
     public static void createCooldown(String k) {
         if (cooldown.containsKey(k.toLowerCase()))
-            throw new IllegalArgumentException("Cooldown already exists. Cooldown: " + k);
+            return;
         cooldown.put(k.toLowerCase(), new HashMap<>());
     }
 
@@ -19,7 +19,7 @@ public class Cooldown {
 
     public static void addCooldown(String k, UUID p, int seconds) {
         if (!cooldown.containsKey(k.toLowerCase()))
-            throw new IllegalArgumentException(k.toLowerCase() + " does not exist");
+            cooldown.put(k.toLowerCase(), new HashMap<>());
         long next = System.currentTimeMillis() + seconds * 1000L;
         cooldown.get(k.toLowerCase()).put(p, Long.valueOf(next));
     }
@@ -41,13 +41,13 @@ public class Cooldown {
 
     public static void removeCooldown(String k, UUID p) {
         if (!cooldown.containsKey(k.toLowerCase()))
-            throw new IllegalArgumentException(k.toLowerCase() + " does not exist");
+            cooldown.put(k.toLowerCase(), new HashMap<>());
         if(cooldown.get(k.toLowerCase()).containsKey(p))
             ((HashMap)cooldown.get(k.toLowerCase())).remove(p);
     }
     public static boolean wasOnCooldown(String k, UUID p){
         if(!cooldown.containsKey(k.toLowerCase()))
-            throw new IllegalArgumentException(k.toLowerCase() + " does not exist");
+            cooldown.put(k.toLowerCase(), new HashMap<>());
         return ((HashMap)cooldown.get(k.toLowerCase())).containsKey(p);
     }
     public static boolean cooldownExists(String k){

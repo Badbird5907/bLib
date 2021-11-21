@@ -1,238 +1,184 @@
 package net.badbird5907.blib.menu.menu;
 
-import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.Setter;
-import net.badbird5907.blib.bLib;
 import net.badbird5907.blib.command.Sender;
-import net.badbird5907.blib.menu.MenuManager;
-import net.badbird5907.blib.menu.buttons.impl.CloseButton;
-import net.badbird5907.blib.util.CC;
 import net.badbird5907.blib.menu.buttons.Button;
-import org.bukkit.Bukkit;
+import net.badbird5907.blib.menu.buttons.impl.CloseButton;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static java.lang.Math.ceil;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
+import static net.badbird5907.blib.bLib.getPlugin;
+import static net.badbird5907.blib.menu.MenuManager.getLastOpenedMenus;
+import static net.badbird5907.blib.menu.MenuManager.getOpenedMenus;
+import static net.badbird5907.blib.util.CC.translate;
+import static org.bukkit.Bukkit.createInventory;
+import static org.bukkit.Bukkit.getConsoleSender;
 
 
 public abstract class Menu {
-    public Plugin plugin = bLib.getPlugin();
+	public Plugin plugin = getPlugin();
+	@Getter
+	@Setter
+	public Menu previous;
+	@Getter
+	private List<Button> buttons = new ArrayList<>();
+	@Setter
+	@Getter
+	private boolean updateInTask = false;
+	@Getter
+	@Setter
+	private boolean cancel = true;
 
-    @Getter
-    private List<Button> buttons = new ArrayList<>();
-    @Setter
-    @Getter
-    private boolean updateInTask = false;
+	public abstract List<Button> getButtons(Player player);
 
-    public abstract List<Button> getButtons(Player player);
+	public abstract String getName(Player player);
 
-    public abstract String getName(Player player);
+	public List<Button> getFinalButtons(Player player) {
+		List<Button> list = getButtons(player);
+		if (list == null) list = new ArrayList<>();
+		Button backButton = getBackButton(player);
+		if (backButton != null) list.add(backButton);
+		return list;
+	}
 
-    public List<Button> getFinalButtons(Player player){
-        List<Button> list = getButtons(player);
-        if (list == null)
-            list = new ArrayList<>();
-        Button backButton = getBackButton(player);
-        if (backButton != null)
-            list.add(backButton);
-        return list;
-    }
+	public void open(Sender sender) {
+		open(sender.getPlayer());
+	}
 
-    @Getter
-    @Setter
-    private boolean cancel = true;
+	public void open(Player player) {
+		Menu previous = getOpenedMenus().get(player.getUniqueId());
+		if (previous != null) {
+			setPrevious(previous);
+			previous.onClose(player);
+			getOpenedMenus().remove(player.getUniqueId());
+		}
+		this.buttons = this.getFinalButtons(player);
+		String title = this.getName(player);
+		if (title.length() > 32) title = title.substring(0, 32);
+		title = translate(title);
+		if (player.getOpenInventory() != null) player.closeInventory();
 
+		Inventory inventory = createInventory(player, this.getInventorySize(this.buttons), title);
+		this.buttons.forEach(button -> {
+			inventory.setItem(button.getSlot(), button.getItem(player));
+			if (button.getSlots() != null)
+				stream(button.getSlots()).filter(this::shouldKeepExtra).forEach(extra -> inventory.setItem(extra, button.getItem(player)));
+		});
+		getOpenedMenus().put(player.getUniqueId(), this);
+		player.openInventory(inventory);
+		this.onOpen(player);
+	}
 
-    @Getter
-    @Setter
-    public Menu previous;
-    public void open(Sender sender){
-        open(sender.getPlayer());
-    }
-    public void open(Player player) {
-        Menu previous = MenuManager.getOpenedMenus().get(player.getUniqueId());
-        if (previous != null) {
-            setPrevious(previous);
-            previous.onClose(player);
-            MenuManager.getOpenedMenus().remove(player.getUniqueId());
-        }
+	private boolean shouldKeepExtra(int slot) {
+		for (Button button1 : this.buttons)
+			if (button1.getSlot() == slot) return false;
+			else if (newArrayList(button1.getSlots()).contains(slot)) return true;
+		return true;
+	}
 
-        this.buttons = this.getFinalButtons(player);
-        String title = this.getName(player);
+	public Button getCloseButton() {
+		return new CloseButton();
+	}
 
-        if (title.length() > 32) title = title.substring(0, 32);
-        title = CC.translate(title);
+	public void update(Player player) {
+		this.buttons = this.getFinalButtons(player);
+		String title = this.getName(player);
+		if (title.length() > 32) title = title.substring(0, 32);
+		title = translate(title);
+		boolean passed = false;
+		Inventory inventory = null;
+		Menu currentlyOpenedMenu = getOpenedMenus().get(player.getUniqueId());
+		Inventory current = player.getOpenInventory().getTopInventory();
+		if ((currentlyOpenedMenu != null) && translate(currentlyOpenedMenu.getName(player)).equals(player.getOpenInventory().getTitle()) && (current.getSize() == this.getInventorySize(this.buttons))) {
+			inventory = current;
+			passed = true;
+		}
+		if (inventory == null) inventory = createInventory(player, this.getInventorySize(this.buttons), title);
+		/*
+		 * TemporaryInventory
+		 * Used to prevent item flickering because 'inventory' is live player inventory
+		 */
+		Inventory temporaryInventory = createInventory(player, inventory.getSize(), player.getOpenInventory().getTitle());
+		this.buttons.forEach(slot -> {
+			temporaryInventory.setItem(slot.getSlot(), slot.getItem(player));
+			if (slot.getSlots() != null)
+				stream(slot.getSlots()).forEach(extra -> temporaryInventory.setItem(extra, slot.getItem(player)));
+		});
+		getOpenedMenus().remove(player.getUniqueId());
+		getOpenedMenus().put(player.getUniqueId(), this);
+		inventory.setContents(temporaryInventory.getContents());
+		if (passed) player.updateInventory();
+		else {
+			player.openInventory(inventory);
+			getConsoleSender().sendMessage(translate("&cOpened new inventory"));
+		}
+		this.onOpen(player);
+	}
 
-        if (player.getOpenInventory() != null) {
-            player.closeInventory();
-        }
+	public int getInventorySize(List<Button> buttons) {
+		int highest = 0;
+		if (!buttons.isEmpty())
+			highest = buttons.stream().sorted(Comparator.comparingInt(Button::getSlot).reversed()).map(Button::getSlot).collect(toList()).get(0);
+		for (Button button : buttons)
+			if (button.getSlots() != null) for (int i = 0; i < button.getSlots().length; i++)
+				if (button.getSlots()[i] > highest) highest = button.getSlots()[i];
+		return (int) (ceil((highest + 1) / 9D) * 9D);
+	}
 
-        Inventory inventory = Bukkit.createInventory(player, this.getInventorySize(this.buttons), title);
+	public boolean hasSlot(int value) {
+		return this.buttons.stream().filter(slot -> (slot.getSlot() == value) || ((slot.getSlots() != null) && stream(slot.getSlots()).anyMatch(i -> (i == value) && shouldKeepExtra(i)))).findFirst().orElse(null) != null;
+	}
 
-        this.buttons.forEach(button -> {
-            inventory.setItem(button.getSlot(), button.getItem(player));
-            if (button.getSlots() != null) {
-                Arrays.stream(button.getSlots()).forEach(extra -> {
-                    if(shouldKeepExtra(extra)) inventory.setItem(extra, button.getItem(player));
-                });
-            }
-        });
+	public Button getSlot(int value) {
+		return this.buttons.stream().filter(slot -> (slot.getSlot() == value) || ((slot.getSlots() != null) && stream(slot.getSlots()).anyMatch(i -> (i == value) && shouldKeepExtra(i)))).findFirst().orElse(null);
+	}
 
-        MenuManager.getOpenedMenus().put(player.getUniqueId(), this);
-        player.openInventory(inventory);
+	public Button getBackButton(Player player) {
+		return null;
+	}
 
-        this.onOpen(player);
-    }
-    private boolean shouldKeepExtra(int slot){
-        for (Button button1 : this.buttons) {
-            if (button1.getSlot() == slot)
-                return false;
-            else if (Lists.newArrayList(button1.getSlots()).contains(slot))
-                return true;
-        }
-        return true;
-    }
-    public Button getCloseButton(){
-        return new CloseButton();
-    }
-    public void update(Player player) {
-        this.buttons = this.getFinalButtons(player);
-        String title = this.getName(player);
+	public void onOpen(Player player) {
+	}
 
-        if (title.length() > 32) title = title.substring(0, 32);
-        title = CC.translate(title);
+	public void onClose(Player player) {
+		getLastOpenedMenus().remove(player.getUniqueId());
+		getLastOpenedMenus().put(player.getUniqueId(), this);
+	}
 
-        boolean passed = false;
-        Inventory inventory = null;
-        Menu currentlyOpenedMenu = MenuManager.getOpenedMenus().get(player.getUniqueId());
-        Inventory current = player.getOpenInventory().getTopInventory();
+	public List<Button> getToolbarButtons() {
+		return null;
+	}
 
-        if (currentlyOpenedMenu != null && CC.translate(currentlyOpenedMenu.getName(player))
-                .equals(player.getOpenInventory().getTitle()) && current.getSize() == this.getInventorySize(this.buttons)) {
-            inventory = current;
-            passed = true;
-        }
+	public List<Button> getFinalExtraButtons(Player p) {
+		List<Button> buttons = new ArrayList<>();
+		if (getToolbarButtons() != null) buttons.addAll(getToolbarButtons());
+		if (getBackButton(p) != null) buttons.add(getBackButton(p));
+		return buttons;
+	}
 
-        if (inventory == null) {
-            inventory = Bukkit.createInventory(player, this.getInventorySize(this.buttons), title);
-        }
+	public boolean doesButtonExist(List<Button> buttons, int i) { //
+		return buttons.stream().filter(button -> {
+			if (button.getSlot() == i) return true;
+			return stream(button.getSlots()).anyMatch(slot -> slot == i);
+		}).findFirst().orElse(null) != null;
+	}
 
-        /**
-         * TemporaryInventory
-         * Used to prevent item flickering because 'inventory' is live player inventory
-         */
-        Inventory temporaryInventory = Bukkit.createInventory(player, inventory.getSize(), player.getOpenInventory().getTitle());
-
-        this.buttons.forEach(slot -> {
-            temporaryInventory.setItem(slot.getSlot(), slot.getItem(player));
-
-            if (slot.getSlots() != null) {
-                Arrays.stream(slot.getSlots()).forEach(extra -> {
-                    temporaryInventory.setItem(extra, slot.getItem(player));
-                });
-            }
-        });
-
-        MenuManager.getOpenedMenus().remove(player.getUniqueId());
-        MenuManager.getOpenedMenus().put(player.getUniqueId(), this);
-
-        inventory.setContents(temporaryInventory.getContents());
-        if (passed) {
-            player.updateInventory();
-        } else {
-            player.openInventory(inventory);
-            Bukkit.getConsoleSender().sendMessage(CC.translate("&cOpened new inventory"));
-        }
-
-        this.onOpen(player);
-    }
-
-    public int getInventorySize(List<Button> buttons) {
-        int highest = 0;
-        if (!buttons.isEmpty()) {
-            highest = buttons.stream().sorted(Comparator.comparingInt(Button::getSlot).reversed()).map(Button::getSlot).collect(Collectors.toList()).get(0);
-        }
-        for (Button button : buttons) {
-            if (button.getSlots() != null) {
-                for (int i = 0; i < button.getSlots().length; i++) {
-                    if (button.getSlots()[i] > highest) {
-                        highest = button.getSlots()[i];
-                    }
-                }
-            }
-        }
-        return (int) (Math.ceil((highest + 1) / 9D) * 9D);
-    }
-
-    public boolean hasSlot(int value) {
-        return this.buttons.stream()
-                .filter(slot -> slot.getSlot() == value || slot.getSlots() != null
-                        && Arrays.stream(slot.getSlots()).anyMatch(i -> i == value && shouldKeepExtra(i)))
-                .findFirst().orElse(null) != null;
-    }
-
-    public Button getSlot(int value) {
-        return this.buttons.stream()
-                .filter(slot -> slot.getSlot() == value || slot.getSlots() != null
-                        && Arrays.stream(slot.getSlots()).anyMatch(i -> i == value && shouldKeepExtra(i)))
-                .findFirst().orElse(null);
-    }
-    public Button getBackButton(Player player){
-        return null;
-    }
-
-    public void onOpen(Player player) {
-
-    }
-
-    public void onClose(Player player) {
-        MenuManager.getLastOpenedMenus().remove(player.getUniqueId());
-        MenuManager.getLastOpenedMenus().put(player.getUniqueId(), this);
-    }
-
-    public List<Button> getToolbarButtons(){
-        return null;
-    }
-    public List<Button> getFinalExtraButtons(Player p){
-        List<Button> buttons = new ArrayList<>();
-        if (getToolbarButtons() != null){
-            buttons.addAll(getToolbarButtons());
-        }
-        if (getBackButton(p) != null)
-            buttons.add(getBackButton(p));
-        return buttons;
-    }
-    public boolean doesButtonExist(List<Button> buttons,int i){ //
-        return buttons.stream().filter(button ->{
-            if (button.getSlot() == i){
-                return true;
-            }
-            for (int slot : button.getSlots()) {
-                if (slot == i)
-                    return true;
-            }
-            return false;
-        }).findFirst().orElse(null) != null;
-    }
-    public int[] genPlaceholderSpots(IntStream intStream, int... skipInput){
-        List<Integer> list = new ArrayList<>(),l1 = new ArrayList<>();
-        if (skipInput != null){
-            for (int i : skipInput) {
-                l1.add(i);
-            }
-        }
-        intStream.forEach(i ->{
-            if (!l1.contains(i)){
-                list.add(i);
-            }
-        });
-        return list.stream().mapToInt(i -> i).toArray();
-    }
+	public int[] genPlaceholderSpots(IntStream intStream, int... skipInput) {
+		List<Integer> list, l1 = new ArrayList<>();
+		if (skipInput != null) l1 = stream(skipInput).boxed().collect(toList());
+		List<Integer> finalL = l1;
+		list = intStream.filter(i -> !finalL.contains(i)).boxed().collect(toList());
+		return list.stream().mapToInt(i -> i).toArray();
+	}
 }

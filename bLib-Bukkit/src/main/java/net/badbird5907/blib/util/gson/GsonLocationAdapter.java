@@ -1,66 +1,45 @@
 package net.badbird5907.blib.util.gson;
 
 import com.google.gson.*;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 
 import java.lang.reflect.Type;
-import java.util.UUID;
+
+import static java.util.Objects.requireNonNull;
+import static org.bukkit.Bukkit.getWorlds;
 
 public class GsonLocationAdapter implements JsonDeserializer<Location>, JsonSerializer<Location> {
-    public static final GsonLocationAdapter INSTANCE = new GsonLocationAdapter();
-    @Override
-    public Location deserialize(JsonElement jsonString, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-        if (!jsonString.isJsonObject()) {
-            throw new JsonParseException("Invalid json string");
-        }
-        final JsonObject obj = (JsonObject) jsonString;
-        final JsonElement worldId = obj.get("worldId");
-        final JsonElement x = obj.get("x");
-        final JsonElement y = obj.get("y");
-        final JsonElement z = obj.get("z");
-        final JsonElement yaw = obj.get("yaw");
-        final JsonElement pitch = obj.get("pitch");
+	public static final GsonLocationAdapter INSTANCE = new GsonLocationAdapter();
 
-        if (worldId == null || x == null || y == null || z == null) {
-            throw new JsonParseException("String json mal formada!");
-        }
-        if (!worldId.isJsonPrimitive() || !((JsonPrimitive) worldId).isString()) {
-            throw new JsonParseException("World is not a string!");
-        }
-        if (!x.isJsonPrimitive() || !((JsonPrimitive) x).isNumber()) {
-            throw new JsonParseException("X is not a number!");
-        }
-        if (!y.isJsonPrimitive() || !((JsonPrimitive) y).isNumber()) {
-            throw new JsonParseException("Y is not a number!");
-        }
-        if (!z.isJsonPrimitive() || !((JsonPrimitive) z).isNumber()) {
-            throw new JsonParseException("Z is not a number!");
-        }
-        if (yaw != null && (!yaw.isJsonPrimitive() || !((JsonPrimitive) yaw).isNumber())) {
-            throw new JsonParseException("Yaw is not a number!");
-        }
-        if (pitch != null && (!pitch.isJsonPrimitive() || !((JsonPrimitive) pitch).isNumber())) {
-            throw new JsonParseException("Pitch is not a number!");
-        }
-        return new Location(Bukkit.getWorlds().get(0), x.getAsDouble(), y.getAsDouble(), z.getAsDouble(),
-                yaw != null ? yaw.getAsFloat() : 0.0F,
-                pitch != null ?pitch.getAsFloat() : 0.0F);
-    }
+	@Override
+	public Location deserialize(JsonElement jsonString, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+		assert jsonString.isJsonObject() : "Invalid json string";
+		final JsonObject obj = (JsonObject) jsonString;
+		final JsonElement worldId = obj.get("worldId");
+		final JsonElement x = obj.get("x");
+		final JsonElement y = obj.get("y");
+		final JsonElement z = obj.get("z");
+		final JsonElement yaw = obj.get("yaw");
+		final JsonElement pitch = obj.get("pitch");
+		assert worldId != null && x != null && y != null && z != null : "String json mal formada!";
+		assert worldId.isJsonPrimitive() && ((JsonPrimitive) worldId).isString() : "World is not a string!";
+		assert x.isJsonPrimitive() && ((JsonPrimitive) x).isNumber() : "X is not a number!";
+		assert y.isJsonPrimitive() && ((JsonPrimitive) y).isNumber() : "Y is not a number!";
+		assert z.isJsonPrimitive() && ((JsonPrimitive) z).isNumber() : "Z is not a number!";
+		assert yaw == null || (yaw.isJsonPrimitive() && ((JsonPrimitive) yaw).isNumber()) : "Yaw is not a number!";
+		assert pitch == null || (pitch.isJsonPrimitive() && ((JsonPrimitive) pitch).isNumber()) : "Pitch is not a number!";
+		return new Location(getWorlds().get(0), x.getAsDouble(), y.getAsDouble(), z.getAsDouble(), yaw != null ? yaw.getAsFloat() : 0.0F, pitch != null ? pitch.getAsFloat() : 0.0F);
+	}
 
-    @Override
-    public JsonElement serialize(Location location, Type type, JsonSerializationContext jsonSerializationContext) {
-
-        final JsonObject obj = new JsonObject();
-        obj.addProperty("worldId", location.getWorld().getUID().toString());
-        obj.addProperty("x", location.getX());
-        obj.addProperty("y", location.getY());
-        obj.addProperty("z", location.getZ());
-        obj.addProperty("yaw", location.getYaw());
-        obj.addProperty("pitch", location.getPitch());
-        return obj;
-
-    }
-
+	@Override
+	public JsonElement serialize(Location location, Type type, JsonSerializationContext jsonSerializationContext) {
+		final JsonObject obj = new JsonObject();
+		obj.addProperty("worldId", requireNonNull(location.getWorld()).getUID().toString());
+		obj.addProperty("x", location.getX());
+		obj.addProperty("y", location.getY());
+		obj.addProperty("z", location.getZ());
+		obj.addProperty("yaw", location.getYaw());
+		obj.addProperty("pitch", location.getPitch());
+		return obj;
+	}
 }

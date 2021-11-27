@@ -12,17 +12,17 @@ bLib is a library I have made to help ease java development, especially developm
 <dependency>
 	<groupId>net.badbird5907</groupId>
 	<artifactId>bLib-Parent</artifactId>
-	<version>2.1.2-REL</version>
+	<version>2.1.3-REL</version>
 </dependency>
 ```
 ### Gradle
 #### Groovy DSL
 ```groovy
-implementation 'net.badbird5907:bLib:2.1.2-REL'
+implementation 'net.badbird5907:bLib:2.1.3-REL'
 ```
 #### Kotlin DSL
 ```kotlin
-implementation("net.badbird5907:bLib:2.1.2-REL")
+implementation("net.badbird5907:bLib:2.1.3-REL")
 ```
 ## Usage (Bukkit)
 ```java

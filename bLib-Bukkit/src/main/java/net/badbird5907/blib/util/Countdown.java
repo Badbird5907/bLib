@@ -16,6 +16,7 @@ public abstract class Countdown {
         start();
     }
     public abstract void count(int current);
+    public abstract void done();
     public final void start() {
         task = new BukkitRunnable() {
 
@@ -23,6 +24,7 @@ public abstract class Countdown {
             public void run() {
                 time--;
                 if (time <= -1){
+                    done();
                     cancel();
                     return;
                 }

@@ -6,6 +6,7 @@ import net.badbird5907.blib.util.ItemBuilder;
 import net.badbird5907.blib.util.XMaterial;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class BackButton extends Button {
@@ -20,8 +21,8 @@ public abstract class BackButton extends Button {
     }
 
     @Override
-    public void onClick(Player player, int slot, ClickType clickType) {
-        clicked(player, slot, clickType);
+    public void onClick(Player player, int slot, ClickType clickType, InventoryClickEvent event) {
+        clicked(player, slot, clickType, event);
     }
-    public abstract void clicked(Player player,int slot,ClickType clickType);
+    public abstract void clicked(Player player,int slot,ClickType clickType, InventoryClickEvent event);
 }

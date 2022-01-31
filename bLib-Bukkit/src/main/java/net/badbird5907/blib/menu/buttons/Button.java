@@ -4,6 +4,7 @@ import net.badbird5907.blib.util.ItemBuilder;
 import net.badbird5907.blib.util.XMaterial;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -15,7 +16,7 @@ public abstract class Button {
     public abstract ItemStack getItem(Player player);
     public abstract int getSlot();
 
-    public void onClick(Player player, int slot, ClickType clickType) {
+    public void onClick(Player player, int slot, ClickType clickType, InventoryClickEvent event) {
 
     }
 

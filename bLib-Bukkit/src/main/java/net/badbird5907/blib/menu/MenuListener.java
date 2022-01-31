@@ -26,7 +26,7 @@ public class MenuListener implements Listener {
         if (!menu.hasSlot(event.getSlot())) return;
 
         Button slot = menu.getSlot(event.getSlot());
-        slot.onClick(player, event.getSlot(), event.getClick());
+        slot.onClick(player, event.getSlot(), event.getClick(),event);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

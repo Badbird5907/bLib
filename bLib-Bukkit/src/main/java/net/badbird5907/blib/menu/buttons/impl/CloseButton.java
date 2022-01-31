@@ -6,6 +6,7 @@ import net.badbird5907.blib.util.ItemBuilder;
 import net.badbird5907.blib.util.XMaterial;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class CloseButton extends Button {
@@ -20,8 +21,7 @@ public class CloseButton extends Button {
     }
 
     @Override
-    public void onClick(Player player, int slot, ClickType clickType) {
-        super.onClick(player, slot, clickType);
+    public void onClick(Player player, int slot, ClickType clickType, InventoryClickEvent event) {
         player.getOpenInventory().close();
     }
 }

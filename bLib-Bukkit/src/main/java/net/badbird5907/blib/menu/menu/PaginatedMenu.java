@@ -23,8 +23,9 @@ public abstract class PaginatedMenu extends Menu {
 
     @Getter
     private int page = 1;
+
     @Override
-   public List<Button> getButtons(Player player) {
+    public List<Button> getButtons(Player player) {
         List<Button> buttons = new ArrayList<>();
         List<Button> toolbar = getToolbarButtons();
         if (toolbar == null) {
@@ -35,25 +36,26 @@ public abstract class PaginatedMenu extends Menu {
         //int maxSlot = (int) ((double) (page) * 27);
         int minSlot = (int) ((double) (page - 1) * getMaxPageItems());
         int maxSlot = (int) ((double) (page) * getMaxPageItems());
-        Button next = new NextPageButton(this),previous = new PreviousPageButton(this);
+        Button next = getNextPageButton(),
+                previous = getPreviousPageButton();
         buttons.add(next);
         buttons.add(previous);
         bottom.add(next);
         bottom.add(previous);
         Button backButton = getBackButton(player);
-        if (backButton != null){
+        if (backButton != null) {
             bottom.add(backButton);
             buttons.add(backButton);
         }
-        if (toolbar != null){
+        if (toolbar != null) {
             buttons.addAll(toolbar);
         }
-        Button close = getCloseButton(),filter = getFilterButton();
+        Button close = getCloseButton(), filter = getFilterButton();
         if (close != null) {
             buttons.add(close);
             bottom.add(close);
         }
-        if (filter != null){
+        if (filter != null) {
             buttons.add(filter);
             bottom.add(filter);
         }
@@ -73,7 +75,7 @@ public abstract class PaginatedMenu extends Menu {
         Button placeholder = getPlaceholderButton();
         if (placeholder != null)
             buttons.add(placeholder);
-        else buttons.add(new PaginatedPlaceholderButton(toolbar,bottom));
+        else buttons.add(new PaginatedPlaceholderButton(toolbar, bottom));
         return buttons;
     }
 
@@ -104,9 +106,9 @@ public abstract class PaginatedMenu extends Menu {
 
     @Override
     public String getName(Player player) {
-        if (showPageNumbersInTitle()){
+        if (showPageNumbersInTitle()) {
             return this.getPagesTitle(player) + CC.R + " (" + page + "/" + getPages(player) + ")";
-        }else return this.getPagesTitle(player);
+        } else return this.getPagesTitle(player);
     }
 
     public void changePage(Player player, int page) {
@@ -128,27 +130,41 @@ public abstract class PaginatedMenu extends Menu {
 
     public abstract List<Button> getPaginatedButtons(Player player);
 
-    public List<Button> getEveryMenuSlots(Player player){
+    public List<Button> getEveryMenuSlots(Player player) {
         return null;
     }
-    public Button getFilterButton(){
+
+    public Button getFilterButton() {
         return null;
     }
-    public Button getPlaceholderButton(){
+
+    public Button getPlaceholderButton() {
         return null;
     }
-    public boolean showPageNumbersInTitle(){
+
+    public Button getNextPageButton() {
+        return new NextPageButton(this);
+    }
+
+    public Button getPreviousPageButton() {
+        return new PreviousPageButton(this);
+    }
+
+    public boolean showPageNumbersInTitle() {
         return true;
     }
-    public int getMaxPageItems(){
+
+    public int getMaxPageItems() {
         return 27;
     }
-    public int getMenuSize(){
+
+    public int getMenuSize() {
         return getMaxPageItems() + 18; //if it dosent work, set to 17
     }
-    public boolean doesButtonExist(List<Button> buttons,int i){
-        return buttons.stream().filter(button ->{
-            if (button.getSlot() == i){
+
+    public boolean doesButtonExist(List<Button> buttons, int i) {
+        return buttons.stream().filter(button -> {
+            if (button.getSlot() == i) {
                 return true;
             }
             for (int slot : button.getSlots()) {
@@ -201,7 +217,7 @@ public abstract class PaginatedMenu extends Menu {
         @Override
         public int[] getSlots() {
             Set<Integer> a = new HashSet<>(); //TODO side border.
-            IntStream.range(0,9).forEach(i ->{ //top toolbar, skip slots that are used
+            IntStream.range(0, 9).forEach(i -> { //top toolbar, skip slots that are used
                 if (!topslots.contains(i))
                     a.add(i);
             });

@@ -1,40 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<parent>
-		<artifactId>bLib-Parent</artifactId>
-		<groupId>net.badbird5907</groupId>
-		<version>2.1.2-REL</version>
-	</parent>
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>bLib-Bungee</artifactId>
-	<name>bLib Bungee</name>
-	<properties>
-		<java.version>1.8</java.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-	<repositories>
-		<repository>
-			<id>sonatype</id>
-			<url>https://oss.sonatype.org/content/groups/public/</url>
-		</repository>
-		<repository>
-			<id>destroystokyo-repo</id>
-			<url>https://repo.destroystokyo.com/repository/maven-public/</url>
-		</repository>
-	</repositories>
-	<dependencies>
-		<dependency>
-			<groupId>net.badbird5907</groupId>
-			<artifactId>bLib-ServerCommons</artifactId>
-			<version>${project.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.github.waterfallmc</groupId>
-			<artifactId>waterfall-api</artifactId>
-			<version>1.16-R0.4-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
+
+    <parent>
+        <artifactId>bLib-Parent</artifactId>
+        <groupId>net.badbird5907</groupId>
+        <version>2.1.5-REL</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>bLib-Bungee</artifactId>
+
+    <name>bLib Bungee</name>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build></build>
+
+    <repositories>
+        <repository>
+            <id>sonatype</id>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>destroystokyo-repo</id>
+            <url>https://repo.destroystokyo.com/repository/maven-public/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.badbird5907</groupId>
+            <artifactId>bLib-ServerCommons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.waterfallmc</groupId>
+            <artifactId>waterfall-api</artifactId>
+            <version>1.16-R0.4-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>

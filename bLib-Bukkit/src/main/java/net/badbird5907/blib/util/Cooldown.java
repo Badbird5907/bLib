@@ -3,48 +3,62 @@ package net.badbird5907.blib.util;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static java.lang.System.currentTimeMillis;
-
 public class Cooldown {
-	private static final HashMap<String, HashMap<UUID, Long>> cooldown = new HashMap<>();
+    private static HashMap<String, HashMap<UUID, Long>> cooldown = new HashMap<>();
 
-	public static void createCooldown(String k) {
-		if (cooldown.containsKey(k.toLowerCase())) return;
-		cooldown.put(k.toLowerCase(), new HashMap<>());
-	}
+    public static void createCooldown(String k) {
+        if (cooldown.containsKey(k.toLowerCase()))
+            return;
+        cooldown.put(k.toLowerCase(), new HashMap<>());
+    }
 
-	public static HashMap<UUID, Long> getCooldownMap(String k) {
-		return cooldown.getOrDefault(k.toLowerCase(), null);
-	}
+    public static HashMap<UUID, Long> getCooldownMap(String k) {
+        if (cooldown.containsKey(k.toLowerCase()))
+            return cooldown.get(k.toLowerCase());
+        return null;
+    }
 
-	public static void addCooldown(String k, UUID p, int seconds) {
-		if (!cooldown.containsKey(k.toLowerCase())) cooldown.put(k.toLowerCase(), new HashMap<>());
-		cooldown.get(k.toLowerCase()).put(p, currentTimeMillis() + (seconds * 1000L));
-	}
+    public static void addCooldown(String k, UUID p, double seconds) {
+        if (!cooldown.containsKey(k.toLowerCase()))
+            cooldown.put(k.toLowerCase(), new HashMap<>());
+        long next = System.currentTimeMillis() + (long) (seconds * 1000);
+        cooldown.get(k.toLowerCase()).put(p, next);
+    }
 
-	public static boolean isOnCooldown(String k, UUID p) {
-		return (cooldown.containsKey(k.toLowerCase()) && cooldown.get(k.toLowerCase()).containsKey(p) && (currentTimeMillis() <= (Long) ((HashMap) cooldown.get(k.toLowerCase())).get(p)));
-	}
+    public static boolean isOnCooldown(String k, UUID p) {
+        return (cooldown.containsKey(k.toLowerCase()) && cooldown.get(k.toLowerCase()).containsKey(p) &&
+                System.currentTimeMillis() <= ((Long) ((HashMap) cooldown.get(k.toLowerCase())).get(p)).longValue());
+    }
 
-	public static int getCooldownForPlayerInt(String k, UUID p) {
-		return (int) ((Long) ((HashMap) cooldown.get(k.toLowerCase())).get(p) - currentTimeMillis()) / 1000;
-	}
+    public static double getCooldownForPlayer(String k, UUID p) {
+        long time = getCooldownForPlayerLong(k, p);
+        return time / 1000.0d;
+    }
 
-	public static long getCooldownForPlayerLong(String k, UUID p) {
-		return (int) ((Long) ((HashMap) cooldown.get(k.toLowerCase())).get(p) - currentTimeMillis());
-	}
+    public static int getCooldownForPlayerInt(String k, UUID p) {
+        return (int) (((Long) ((HashMap) cooldown.get(k.toLowerCase())).get(p)).longValue() -
+                System.currentTimeMillis()) / 1000;
+    }
 
-	public static void removeCooldown(String k, UUID p) {
-		if (!cooldown.containsKey(k.toLowerCase())) cooldown.put(k.toLowerCase(), new HashMap<>());
-		if (cooldown.get(k.toLowerCase()).containsKey(p)) ((HashMap) cooldown.get(k.toLowerCase())).remove(p);
-	}
+    public static long getCooldownForPlayerLong(String k, UUID p) {
+        return (((Long) ((HashMap) cooldown.get(k.toLowerCase())).get(p)).longValue() -
+                System.currentTimeMillis());
+    }
 
-	public static boolean wasOnCooldown(String k, UUID p) {
-		if (!cooldown.containsKey(k.toLowerCase())) cooldown.put(k.toLowerCase(), new HashMap<>());
-		return cooldown.get(k.toLowerCase()).containsKey(p);
-	}
+    public static void removeCooldown(String k, UUID p) {
+        if (!cooldown.containsKey(k.toLowerCase()))
+            cooldown.put(k.toLowerCase(), new HashMap<>());
+        if (cooldown.get(k.toLowerCase()).containsKey(p))
+            ((HashMap) cooldown.get(k.toLowerCase())).remove(p);
+    }
 
-	public static boolean cooldownExists(String k) {
-		return cooldown.containsKey(k);
-	}
+    public static boolean wasOnCooldown(String k, UUID p) {
+        if (!cooldown.containsKey(k.toLowerCase()))
+            cooldown.put(k.toLowerCase(), new HashMap<>());
+        return ((HashMap) cooldown.get(k.toLowerCase())).containsKey(p);
+    }
+
+    public static boolean cooldownExists(String k) {
+        return cooldown.containsKey(k);
+    }
 }

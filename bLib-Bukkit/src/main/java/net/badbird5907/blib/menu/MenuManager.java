@@ -9,8 +9,8 @@ import java.util.UUID;
 
 @Getter
 public class MenuManager {
-    @Getter
-    private static Map<UUID, Menu> openedMenus = new HashMap<>();
-    @Getter
-    private static Map<UUID, Menu> lastOpenedMenus = new HashMap<>();
+	@Getter
+	private static final Map<UUID, Menu> openedMenus = new HashMap<>();
+	@Getter
+	private static final Map<UUID, Menu> lastOpenedMenus = new HashMap<>();
 }

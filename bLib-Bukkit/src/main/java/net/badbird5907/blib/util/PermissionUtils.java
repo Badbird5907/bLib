@@ -1,16 +1,14 @@
 package net.badbird5907.blib.util;
 
-import org.bukkit.Bukkit;
+import org.bukkit.permissions.Permission;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import static java.util.stream.Collectors.toSet;
+import static org.bukkit.Bukkit.getPluginManager;
+
 public class PermissionUtils {
-    public static Set<String> getRegisteredPermissionsString(){
-        Set<String> permissions = new HashSet<>();
-        Bukkit.getPluginManager().getPermissions().forEach(perm -> permissions.add(perm.getName()));
-        return permissions;
-    }
+	public static Set<String> getRegisteredPermissionsString() {
+		return getPluginManager().getPermissions().stream().map(Permission::getName).collect(toSet());
+	}
 }

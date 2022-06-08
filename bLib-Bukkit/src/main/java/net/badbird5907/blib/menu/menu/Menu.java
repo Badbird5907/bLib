@@ -47,12 +47,13 @@ public abstract class Menu {
         List<Button> list = getButtons(player);
         if (list == null)
             list = new ArrayList<>();
+        List<Button> l = new ArrayList<>(list);
         if (this instanceof PaginatedMenu)
-            return list;
+            return l;
         Button backButton = getBackButton(player);
         if (backButton != null)
-            list.add(backButton);
-        return list;
+            l.add(backButton);
+        return l;
     }
 
     @Getter
@@ -91,6 +92,7 @@ public abstract class Menu {
             Inventory inventory = Bukkit.createInventory(player, this.getInventorySize(this.buttons), title);
 
             this.buttons.forEach(button -> {
+                System.out.println(button.getItem(player));
                 if (button.getSlot() >= 0)
                     inventory.setItem(button.getSlot(), button.getItem(player));
                 if (button.getSlots() != null) {

@@ -7,12 +7,11 @@ import net.badbird5907.blib.command.CommandFramework;
 import net.badbird5907.blib.menu.MenuListener;
 import net.badbird5907.blib.util.Glow;
 import net.badbird5907.blib.util.Logger;
+import net.badbird5907.blib.util.ReflectionUtils;
+import net.badbird5907.blib.util.Tasks;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
-
-import static net.badbird5907.blib.util.ReflectionUtils.getClassesInPackage;
-import static net.badbird5907.blib.util.Tasks.init;
-import static org.bukkit.Bukkit.getPluginManager;
 
 @Getter
 @Setter
@@ -27,13 +26,16 @@ public class bLib {
 	@Setter
 	private static boolean autoCompleteCommandsFromUsage = false;
 	@Getter
+	/**
+	 * @deprecated Please use https://github.com/OctoPvP/Commander/
+	 */
 	private static CommandFramework commandFramework;
 
 	public bLib(Plugin plugin, String prefix) {
 		instance = this;
 		setPlugin(plugin);
 		new Logger(plugin.getLogger(), prefix, "[DEBUG]");
-		init(plugin);
+		Tasks.init(plugin);
 		commandFramework = new CommandFramework(plugin);
 		plugin.getServer().getPluginManager().registerEvents(new MenuListener(), plugin);
 		Glow.init(plugin);
@@ -55,12 +57,12 @@ public class bLib {
 
 	@SneakyThrows
 	public void registerListenersInPackage(String p) {
-		getClassesInPackage(plugin, p).forEach(this::registerListener);
+		ReflectionUtils.getClassesInPackage(plugin, p).forEach(this::registerListener);
 	}
 
 	@SneakyThrows
 	public void registerListener(Class clazz) {
 		if (Listener.class.isAssignableFrom(clazz))
-			getPluginManager().registerEvents((Listener) clazz.getDeclaredConstructor().newInstance(), plugin);
+			Bukkit.getPluginManager().registerEvents((Listener) clazz.getDeclaredConstructor().newInstance(), plugin);
 	}
 }

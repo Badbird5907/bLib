@@ -1,5 +1,10 @@
 package net.badbird5907.blib.command;
 
+import net.badbird5907.blib.bLib;
+import net.badbird5907.blib.util.Cooldown;
+import net.badbird5907.blib.util.ReflectionUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
@@ -19,26 +24,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.Map.Entry;
-
-import static java.lang.Thread.dumpStack;
-import static java.util.Arrays.stream;
-import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.IntStream.range;
-import static net.badbird5907.blib.bLib.getPlugin;
-import static net.badbird5907.blib.command.CommandResult.INVALID_ARGS;
-import static net.badbird5907.blib.command.CommandResult.SUCCESS;
-import static net.badbird5907.blib.util.Cooldown.*;
-import static net.badbird5907.blib.util.ReflectionUtils.getClassesInPackage;
-import static org.bukkit.Bukkit.*;
-import static org.bukkit.ChatColor.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Command Framework - CommandFramework <br>
  * The main command framework class used for controlling the framework.
  *
  * @author minnymin3
+ * @deprecated Please use https://github.com/OctoPvP/Commander/
  */
+@Deprecated
 public class CommandFramework implements CommandExecutor {
 	private static CommandFramework instance;
 	private final Map<String, Entry<Method, Object>> commandMap = new HashMap<>();
@@ -72,12 +68,12 @@ public class CommandFramework implements CommandExecutor {
 
 	private static void registerPermission(String name, String desc) {
 		Permission perm = new Permission(name, desc);
-		if (!getRegisteredPermissionsString().contains(name)) getPluginManager().getPermissions().add(perm);
+		if (!getRegisteredPermissionsString().contains(name)) Bukkit.getPluginManager().getPermissions().add(perm);
 	}
 
 	private static Set<String> getRegisteredPermissionsString() {
 		Set<String> permissions = new HashSet<>();
-		getPluginManager().getPermissions().forEach(perm -> permissions.add(perm.getName()));
+		Bukkit.getPluginManager().getPermissions().forEach(perm -> permissions.add(perm.getName()));
 		return permissions;
 	}
 
@@ -98,18 +94,18 @@ public class CommandFramework implements CommandExecutor {
 	 */
 	public boolean handleCommand(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
 		for (int i = args.length; i >= 0; i--) {
-			String buffer = range(0, i).mapToObj(x -> "." + args[x].toLowerCase()).collect(joining("", label.toLowerCase(), ""));
+			String buffer = IntStream.range(0, i).mapToObj(x -> "." + args[x].toLowerCase()).collect(Collectors.joining("", label.toLowerCase(), ""));
 			String cmdLabel = buffer.replaceFirst(plugin.getDescription().getName().toLowerCase() + ":", "").replaceFirst("/" + plugin.getDescription().getName().toLowerCase() + ":", "");
 			if (commandMap.containsKey(cmdLabel)) {
 				Method method = commandMap.get(cmdLabel).getKey();
 				Object methodObject = commandMap.get(cmdLabel).getValue();
 				Command command = method.getAnnotation(Command.class);
 				if (!command.permission().equals("")) if (!sender.hasPermission(command.permission())) {
-					sender.sendMessage(RED + "You do not have permission to execute this command!");
+					sender.sendMessage(ChatColor.RED + "You do not have permission to execute this command!");
 					return true;
 				}
 				if (command.playerOnly()) if (!(sender instanceof Player)) {
-					sender.sendMessage(RED + "This command is player only!");
+					sender.sendMessage(ChatColor.RED + "This command is player only!");
 					return true;
 				}
 				//if(command.argLength() > args.length){}
@@ -117,23 +113,23 @@ public class CommandFramework implements CommandExecutor {
 					if (sender instanceof Player) {
 						Player p = (Player) sender;
 						//They are currently on cooldown
-						if (isOnCooldown(command.name() + "|cmd_cooldown", p.getUniqueId())) {
-							p.sendMessage(RED + "You are currently on cooldown for this command! You may try again in " + GOLD + getCooldownForPlayerInt(command.name() + "|cmd_cooldown", p.getUniqueId()));
+						if (Cooldown.isOnCooldown(command.name() + "|cmd_cooldown", p.getUniqueId())) {
+							p.sendMessage(ChatColor.RED + "You are currently on cooldown for this command! You may try again in " + ChatColor.GOLD + Cooldown.getCooldownForPlayerInt(command.name() + "|cmd_cooldown", p.getUniqueId()));
 							return true;
 						}
 						//They used to have a cooldown
-						if (wasOnCooldown(command.name() + "|cmd_cooldown", p.getUniqueId())) {
+						if (Cooldown.wasOnCooldown(command.name() + "|cmd_cooldown", p.getUniqueId())) {
 							//remove that cooldown
-							removeCooldown(command.name() + "|cmd_cooldown", p.getUniqueId());
+							Cooldown.removeCooldown(command.name() + "|cmd_cooldown", p.getUniqueId());
 						}
 						//Create a new cooldown for that
 					}
 				}
 				try {
 					CommandResult result = (CommandResult) method.invoke(methodObject, new Sender(sender), args);
-					if (result == SUCCESS) return true;
-					if (result == INVALID_ARGS)
-						sender.sendMessage(RED + "Usage: /" + command.name() + " " + translateAlternateColorCodes('&', command.usage().replace("Usage: /" + command.name() + " ", "")));
+					if (result == CommandResult.SUCCESS) return true;
+					if (result == CommandResult.INVALID_ARGS)
+						sender.sendMessage(ChatColor.RED + "Usage: /" + command.name() + " " + ChatColor.translateAlternateColorCodes('&', command.usage().replace("Usage: /" + command.name() + " ", "")));
 					else if ((result != null) && !result.getMsg().equals("") && result.getMsg().equals(" "))
 						sender.sendMessage(result.getMsg());
 					return true;
@@ -143,8 +139,8 @@ public class CommandFramework implements CommandExecutor {
 				return true;
 			}
 		}
-		sender.sendMessage(RED + "Unhandled command! Please report this to the plugin author! (With the stack trace that has been printed in console.)");
-		dumpStack();
+		sender.sendMessage(ChatColor.RED + "Unhandled command! Please report this to the plugin author! (With the stack trace that has been printed in console.)");
+		Thread.dumpStack();
 		return true;
 	}
 
@@ -155,27 +151,27 @@ public class CommandFramework implements CommandExecutor {
 	 * @param obj The object to register the commands of
 	 */
 	public void registerCommands(Object obj) {
-		stream(obj.getClass().getMethods()).forEach(m -> {
+		Arrays.stream(obj.getClass().getMethods()).forEach(m -> {
 			if (m.getAnnotation(Command.class) != null) {
 				Command command = m.getAnnotation(Command.class);
 				if ((m.getParameterTypes().length > 2) || (m.getParameterTypes()[0] != Sender.class) || (m.getParameterTypes()[1] != String[].class)) {
-					getLogger().severe("Unable to register command \"" + m.getName() + "\". Unexpected method arguments");
+					Bukkit.getLogger().severe("Unable to register command \"" + m.getName() + "\". Unexpected method arguments");
 					return;
 				}
 				registerCommand(command, command.name(), m, obj);
-				stream(command.aliases()).forEach(alias -> registerCommand(command, alias, m, obj));
+				Arrays.stream(command.aliases()).forEach(alias -> registerCommand(command, alias, m, obj));
 			} else if (m.getAnnotation(Completer.class) != null) {
 				Completer comp = m.getAnnotation(Completer.class);
 				if ((m.getParameterTypes().length > 2) || (m.getParameterTypes().length == 0) || (m.getParameterTypes()[0] != Sender.class) || (m.getParameterTypes()[1] != String[].class)) {
-					getLogger().severe("Unable to register tab completer \"" + m.getName() + "\". Unexpected method arguments");
+					Bukkit.getLogger().severe("Unable to register tab completer \"" + m.getName() + "\". Unexpected method arguments");
 					return;
 				}
 				if (m.getReturnType() != List.class) {
-					getLogger().severe("Unable to register tab completer \"" + m.getName() + "\". Unexpected return type");
+					Bukkit.getLogger().severe("Unable to register tab completer \"" + m.getName() + "\". Unexpected return type");
 					return;
 				}
 				registerCompleter(comp.name(), m, obj);
-				stream(comp.aliases()).forEach(alias -> registerCompleter(alias, m, obj));
+				Arrays.stream(comp.aliases()).forEach(alias -> registerCompleter(alias, m, obj));
 			}
 		});
 	}
@@ -185,9 +181,9 @@ public class CommandFramework implements CommandExecutor {
 	 */
 	public void registerHelp() {
 		Set<HelpTopic> help = new TreeSet<HelpTopic>(HelpTopicComparator.helpTopicComparatorInstance());
-		commandMap.keySet().stream().filter(s -> !s.contains(".")).map(s -> new GenericCommandHelpTopic(requireNonNull(map.getCommand(s)))).forEach(help::add);
+		commandMap.keySet().stream().filter(s -> !s.contains(".")).map(s -> new GenericCommandHelpTopic(Objects.requireNonNull(map.getCommand(s)))).forEach(help::add);
 		IndexHelpTopic topic = new IndexHelpTopic(plugin.getName(), "All commands for " + plugin.getName(), null, help, "Below is a list of all " + plugin.getName() + " commands:");
-		getServer().getHelpMap().addTopic(topic);
+		Bukkit.getServer().getHelpMap().addTopic(topic);
 	}
 
 	public void registerCommand(Command command, String label, Method m, Object obj) {
@@ -198,12 +194,12 @@ public class CommandFramework implements CommandExecutor {
 		String cmdLabel = label.split("\\.")[0].toLowerCase();
 		if (map.getCommand(cmdLabel) == null) map.register(plugin.getName(), new BukkitCommand(cmdLabel, this, plugin));
 		// make sure that we're only registering one cooldown, use command.name(); and not label because label could be an alias
-		if (command.cooldown() >= 1 && !cooldownExists(command.name() + "|cmd_cooldown"))
-			createCooldown(command.name() + "|cmd_cooldown");
+		if (command.cooldown() >= 1 && !Cooldown.cooldownExists(command.name() + "|cmd_cooldown"))
+			Cooldown.createCooldown(command.name() + "|cmd_cooldown");
 		if (!command.description().equalsIgnoreCase("") && cmdLabel.equals(label))
-			requireNonNull(map.getCommand(cmdLabel)).setDescription(command.description());
+			Objects.requireNonNull(map.getCommand(cmdLabel)).setDescription(command.description());
 		if (!command.usage().equalsIgnoreCase("") && cmdLabel.equals(label))
-			requireNonNull(map.getCommand(cmdLabel)).setUsage(command.usage());
+			Objects.requireNonNull(map.getCommand(cmdLabel)).setUsage(command.usage());
 		//if(!Bukkit.getPluginManager().getPermissions().contains())
 		//	Bukkit.getPluginManager().addPermission(perm);
 		if (!(command.permission() == null) && !command.permission().equals(""))
@@ -215,12 +211,12 @@ public class CommandFramework implements CommandExecutor {
 		if (map.getCommand(cmdLabel) == null) map.register(plugin.getName(), new BukkitCommand(cmdLabel, this, plugin));
 		if (map.getCommand(cmdLabel) instanceof BukkitCommand) {
 			BukkitCommand command = (BukkitCommand) map.getCommand(cmdLabel);
-			if (requireNonNull(command).completer == null) command.completer = new BukkitCompleter();
+			if (Objects.requireNonNull(command).completer == null) command.completer = new BukkitCompleter();
 			command.completer.addCompleter(label, m, obj);
 		} else if (map.getCommand(cmdLabel) instanceof PluginCommand) {
 			try {
 				Object command = map.getCommand(cmdLabel);
-				Field field = requireNonNull(command).getClass().getDeclaredField("completer");
+				Field field = Objects.requireNonNull(command).getClass().getDeclaredField("completer");
 				field.setAccessible(true);
 				if (field.get(command) == null) {
 					BukkitCompleter completer = new BukkitCompleter();
@@ -230,7 +226,7 @@ public class CommandFramework implements CommandExecutor {
 					BukkitCompleter completer = (BukkitCompleter) field.get(command);
 					completer.addCompleter(label, m, obj);
 				} else
-					getLogger().severe("Unable to register tab completer " + m.getName() + ". A tab completer is already registered for that command!");
+					Bukkit.getLogger().severe("Unable to register tab completer " + m.getName() + ". A tab completer is already registered for that command!");
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
@@ -238,7 +234,7 @@ public class CommandFramework implements CommandExecutor {
 	}
 
 	public void registerCommandsInPackage(String packageName) {
-		getClassesInPackage(getPlugin(), packageName).stream().filter(clazz -> BaseCommand.class.isAssignableFrom(clazz) && clazz.getSuperclass() == BaseCommand.class).forEach(clazz -> {
+		ReflectionUtils.getClassesInPackage(bLib.getPlugin(), packageName).stream().filter(clazz -> BaseCommand.class.isAssignableFrom(clazz) && clazz.getSuperclass() == BaseCommand.class).forEach(clazz -> {
 			try {
 				Constructor<?> constructor = clazz.getDeclaredConstructor();
 				constructor.newInstance();

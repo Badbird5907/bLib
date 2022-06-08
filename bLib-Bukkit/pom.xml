@@ -2,7 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <parent>
         <artifactId>bLib-Parent</artifactId>
         <groupId>net.badbird5907</groupId>
@@ -10,39 +9,56 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>bLib-Bungee</artifactId>
-
-    <name>bLib Bungee</name>
+    <artifactId>bLib-Bukkit</artifactId>
 
     <properties>
-        <java.version>1.8</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
     </properties>
-
-    <build></build>
-
     <repositories>
         <repository>
-            <id>sonatype</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
+            <id>spigotmc-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>destroystokyo-repo</id>
-            <url>https://repo.destroystokyo.com/repository/maven-public/</url>
+            <id>minecraft-repo</id>
+            <url>https://libraries.minecraft.net/</url>
         </repository>
     </repositories>
-
     <dependencies>
+        <dependency>
+            <groupId>net.badbird5907</groupId>
+            <artifactId>bLib-Common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>net.badbird5907</groupId>
             <artifactId>bLib-ServerCommons</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--use 1.16.5 for java 8 compatibility-->
         <dependency>
-            <groupId>io.github.waterfallmc</groupId>
-            <artifactId>waterfall-api</artifactId>
-            <version>1.16-R0.4-SNAPSHOT</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.16.5-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.20</version>
+        </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.12</version>
+        </dependency>
+        <dependency>
+            <groupId>com.mojang</groupId>
+            <artifactId>authlib</artifactId>
+            <version>1.5.25</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
 </project>

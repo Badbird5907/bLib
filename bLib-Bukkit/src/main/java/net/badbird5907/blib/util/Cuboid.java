@@ -1,9 +1,6 @@
 package net.badbird5907.blib.util;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Entity;
@@ -271,37 +268,37 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
         Cuboid face = this.getFace(dir.opposite());
         switch (dir) {
             case DOWN: {
-                while (face.containsOnly(0) && face.getLowerY() > this.getLowerY()) {
+                while (face.containsOnly(Material.AIR) && face.getLowerY() > this.getLowerY()) {
                     face = face.shift(CuboidDirection.DOWN, 1);
                 }
                 return new Cuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, face.getUpperY(), this.z2);
             }
             case UP: {
-                while (face.containsOnly(0) && face.getUpperY() < this.getUpperY()) {
+                while (face.containsOnly(Material.AIR) && face.getUpperY() < this.getUpperY()) {
                     face = face.shift(CuboidDirection.UP, 1);
                 }
                 return new Cuboid(this.worldName, this.x1, face.getLowerY(), this.z1, this.x2, this.y2, this.z2);
             }
             case NORTH: {
-                while (face.containsOnly(0) && face.getLowerX() > this.getLowerX()) {
+                while (face.containsOnly(Material.AIR) && face.getLowerX() > this.getLowerX()) {
                     face = face.shift(CuboidDirection.NORTH, 1);
                 }
                 return new Cuboid(this.worldName, this.x1, this.y1, this.z1, face.getUpperX(), this.y2, this.z2);
             }
             case SOUTH: {
-                while (face.containsOnly(0) && face.getUpperX() < this.getUpperX()) {
+                while (face.containsOnly(Material.AIR) && face.getUpperX() < this.getUpperX()) {
                     face = face.shift(CuboidDirection.SOUTH, 1);
                 }
                 return new Cuboid(this.worldName, face.getLowerX(), this.y1, this.z1, this.x2, this.y2, this.z2);
             }
             case EAST: {
-                while (face.containsOnly(0) && face.getLowerZ() > this.getLowerZ()) {
+                while (face.containsOnly(Material.AIR) && face.getLowerZ() > this.getLowerZ()) {
                     face = face.shift(CuboidDirection.EAST, 1);
                 }
                 return new Cuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y2, face.getUpperZ());
             }
             case WEST: {
-                while (face.containsOnly(0) && face.getUpperZ() < this.getUpperZ()) {
+                while (face.containsOnly(Material.AIR) && face.getUpperZ() < this.getUpperZ()) {
                     face = face.shift(CuboidDirection.WEST, 1);
                 }
                 return new Cuboid(this.worldName, this.x1, this.y1, face.getLowerZ(), this.x2, this.y2, this.z2);
@@ -338,9 +335,17 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
         }
     }
 
-    public boolean containsOnly(final int blockId) {
+    public boolean containsOnly(final Material material) {
         for (final Block b : this) {
-            if (b.getTypeId() != blockId) {
+            if (b.getType() != material) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public boolean containsOnly(final Block block) {
+        for (final Block b : this) {
+            if (b.getType() != block.getType()) {
                 return false;
             }
         }

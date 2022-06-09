@@ -92,7 +92,7 @@ public abstract class Menu {
             Inventory inventory = Bukkit.createInventory(player, this.getInventorySize(this.buttons), title);
 
             this.buttons.forEach(button -> {
-                System.out.println(button.getItem(player));
+                //System.out.println(button.getItem(player));
                 if (button.getSlot() >= 0)
                     inventory.setItem(button.getSlot(), button.getItem(player));
                 if (button.getSlots() != null) {

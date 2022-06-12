@@ -30,7 +30,7 @@ public class Cooldown {
                 System.currentTimeMillis() <= ((Long) ((HashMap) cooldown.get(k.toLowerCase())).get(p)).longValue());
     }
 
-    public static double getCooldownForPlayer(String k, UUID p) {
+    public static double getCooldownForPlayerDouble(String k, UUID p) {
         long time = getCooldownForPlayerLong(k, p);
         return time / 1000.0d;
     }

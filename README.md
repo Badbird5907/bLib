@@ -18,7 +18,7 @@ bLib is a library I have made to help ease java development, especially developm
 <dependency>
 	<groupId>net.badbird5907</groupId>
 	<artifactId>bLib-Parent</artifactId>
-	<version>2.1.7-REL</version>
+	<version>2.1.8-REL</version>
 </dependency>
 ```
 
@@ -27,13 +27,13 @@ bLib is a library I have made to help ease java development, especially developm
 #### Groovy DSL
 
 ```groovy
-implementation 'net.badbird5907:bLib:2.1.7-REL'
+implementation 'net.badbird5907:bLib:2.1.8-REL'
 ```
 
 #### Kotlin DSL
 
 ```kotlin
-implementation("net.badbird5907:bLib:2.1.7-REL")
+implementation("net.badbird5907:bLib:2.1.8-REL")
 ```
 
 ## Usage (Bukkit)

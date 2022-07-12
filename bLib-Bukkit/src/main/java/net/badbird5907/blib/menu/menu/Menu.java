@@ -12,6 +12,7 @@ import net.badbird5907.blib.util.CC;
 import net.badbird5907.blib.util.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
@@ -64,6 +65,8 @@ public abstract class Menu {
     @Getter
     @Setter
     public Menu previous;
+
+    public void onClick(InventoryClickEvent clickEvent) {}
 
     public void open(Sender sender) {
         open(sender.getPlayer());

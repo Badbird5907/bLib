@@ -15,6 +15,7 @@ public abstract class Countdown {
     private boolean async = false;
     public Countdown(int time, boolean... async) {
         this.time = time;
+        this.count = 10;
         if (async.length > 0) {
             this.async = async[0];
         }
@@ -23,7 +24,7 @@ public abstract class Countdown {
     public abstract void count(int current);
     public abstract void done();
     public final void start() {
-        count = 0;
+        time = 0;
         BukkitRunnable runnable = new BukkitRunnable() {
 
             @Override

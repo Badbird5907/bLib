@@ -9,29 +9,40 @@ public abstract class Countdown {
 
     private int time;
 
-    protected BukkitTask task;
+    private BukkitTask task;
+    private int count = 0;
     protected final Plugin plugin = bLib.getPlugin();
-    public Countdown(int time) {
+    private boolean async = false;
+    public Countdown(int time, boolean... async) {
         this.time = time;
+        if (async.length > 0) {
+            this.async = async[0];
+        }
         start();
     }
     public abstract void count(int current);
     public abstract void done();
     public final void start() {
-        task = new BukkitRunnable() {
+        count = 0;
+        BukkitRunnable runnable = new BukkitRunnable() {
 
             @Override
             public void run() {
-                time--;
-                if (time <= -1){
-                    done();
+                time = time <= count ? time + 1 : -1;
+                if (time >= count || time == -1) {
                     cancel();
+                    done();
                     return;
                 }
-                count(time);
+                int left = count - time;
+                count(left);
             }
-
-        }.runTaskTimer(plugin, 0L, 20L);
+        };
+        if (async) {
+            task = runnable.runTaskTimerAsynchronously(plugin, 0L, 20L);
+        } else {
+            task = runnable.runTaskTimer(plugin, 0L, 20L);
+        }
     }
 
 }

@@ -4,9 +4,10 @@ import com.google.gson.Gson;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.badbird5907.blib.bLib;
-import org.apache.commons.lang.Validate;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -26,7 +27,7 @@ import java.util.*;
  *
  * @author Acquized
  * @version 1.8.3
- * @contributor Kev575
+ * @contributor Kev575, Badbird5907
  */
 public class ItemBuilder {
 	private ItemStack item;
@@ -35,8 +36,8 @@ public class ItemBuilder {
 	private int amount = 1;
 	private short damage = 0;
 	private Map<Enchantment, Integer> enchantments = new HashMap<>();
-	private String displayName;
-	private List<String> lore = new ArrayList<>();
+	private Component displayName;
+	private List<Component> lore = new ArrayList<>();
 	private List<ItemFlag> flags = new ArrayList<>();
 	private boolean wrapLore = true, glow = false, hideAttributes = false;
 	private int wrapSize = 30;
@@ -75,7 +76,7 @@ public class ItemBuilder {
 		if (((amount > material.getMaxStackSize()) && !unsafeStackSize) || ((amount <= 0) && !unsafeStackSize))
 			amount = 1;
 		this.amount = amount;
-		this.displayName = displayname;
+		this.displayName = CUtil.deseializeSection(displayname);
 	}
 
 	/**
@@ -86,7 +87,7 @@ public class ItemBuilder {
 		Validate.notNull(displayname, "The displayname is null.");
 		this.item = new ItemStack(material);
 		this.material = material;
-		this.displayName = displayname;
+		this.displayName = CUtil.deseializeSection(displayname);
 	}
 
 	/**
@@ -99,10 +100,12 @@ public class ItemBuilder {
 		this.amount = item.getAmount();
 		this.damage = item.getDurability();
 		this.enchantments = item.getEnchantments();
+		this.lore = item.lore();
+		if (lore != null) lore = new ArrayList<>(lore);
+		else lore = new ArrayList<>();
 		if (item.hasItemMeta()) {
 			this.meta = item.getItemMeta();
-			this.displayName = Objects.requireNonNull(item.getItemMeta()).getDisplayName();
-			this.lore = item.getItemMeta().getLore();
+			this.displayName = Objects.requireNonNull(item.getItemMeta()).displayName();
 			item.getItemMeta().getItemFlags().forEach(f -> {
 				System.out.println(f);
 				flags.add(f);
@@ -265,7 +268,7 @@ public class ItemBuilder {
 	 */
 	public ItemBuilder displayName(String displayName) {
 		Validate.notNull(displayName, "The displayname is null.");
-		this.displayName = andSymbol ? ChatColor.translateAlternateColorCodes('&', displayName) : displayName;
+		this.displayName = CUtil.deseializeSection(andSymbol ? CC.translate(displayName) : displayName);
 		return this;
 	}
 
@@ -276,12 +279,19 @@ public class ItemBuilder {
 	 */
 	public ItemBuilder name(String displayName) {
 		Validate.notNull(displayName, "The displayName is null.");
-		this.displayName = andSymbol ? ChatColor.translateAlternateColorCodes('&', displayName) : displayName;
+		this.displayName = CUtil.deseializeSection(andSymbol ? CC.translate(displayName) : displayName);
 		return this;
 	}
 
 	public ItemBuilder setName(String name) {
 		this.name(name);
+		return this;
+	}
+	public ItemBuilder setName(Component name) {
+		return name(name);
+	}
+	public ItemBuilder name(Component name) {
+		this.displayName = name;
 		return this;
 	}
 
@@ -302,7 +312,24 @@ public class ItemBuilder {
 	 */
 	public ItemBuilder lore(String line) {
 		Validate.notNull(line, "The line is null.");
-		lore.add(andSymbol ? ChatColor.translateAlternateColorCodes('&', line) : line);
+		lore.add(CUtil.deseializeSection(andSymbol ? CC.translate(line) : line));
+		return this;
+	}
+
+	public ItemBuilder lore(Component line) {
+		Validate.notNull(line, "The line is null.");
+		lore.add(line);
+		return this;
+	}
+	public ItemBuilder addLoreLine(Component line) {
+		return lore(line);
+	}
+
+	public ItemBuilder lore(Component line, Component... lines) {
+		lore.add(line);
+		if (lines != null && lines.length > 0) {
+			lore.addAll(Arrays.asList(lines));
+		}
 		return this;
 	}
     /*
@@ -334,7 +361,7 @@ public class ItemBuilder {
 	 */
 	public ItemBuilder lore(List<String> lore) {
 		Validate.notNull(lore, "The lores are null.");
-		this.lore = lore;
+		this.lore = lore.stream().map(CUtil::deseializeSection).toList();
 		return this;
 	}
 
@@ -352,7 +379,7 @@ public class ItemBuilder {
 	@Deprecated
 	public ItemBuilder lores(String... lines) {
 		Validate.notNull(lines, "The lines are null.");
-		Arrays.stream(lines).map(line -> andSymbol ? ChatColor.translateAlternateColorCodes('&', line) : line).forEach(this::lore);
+		Arrays.stream(lines).map(line -> andSymbol ? CC.translate(line) : line).forEach(this::lore);
 		return this;
 	}
 
@@ -363,7 +390,7 @@ public class ItemBuilder {
 	 */
 	public ItemBuilder lore(String... lines) {
 		Validate.notNull(lines, "The lines are null.");
-		Arrays.stream(lines).forEach(line -> lore(andSymbol ? ChatColor.translateAlternateColorCodes('&', line) : line));
+		Arrays.stream(lines).forEach(line -> lore(andSymbol ? CC.translate(line) : line));
 		return this;
 	}
 
@@ -375,7 +402,7 @@ public class ItemBuilder {
 	 */
 	public ItemBuilder lore(String line, int index) {
 		Validate.notNull(line, "The line is null.");
-		lore.set(index, andSymbol ? ChatColor.translateAlternateColorCodes('&', line) : line);
+		lore.set(index, CUtil.deseializeSection(andSymbol ? CC.translate(line) : line));
 		return this;
 	}
 
@@ -504,7 +531,7 @@ public class ItemBuilder {
 	/**
 	 * Returns the Displayname
 	 */
-	public String getDisplayName() {
+	public Component getDisplayName() {
 		return displayName;
 	}
 
@@ -540,9 +567,9 @@ public class ItemBuilder {
 	}
 
 	/**
-	 * Returns the Lores
+	 * Returns the Lore lines
 	 */
-	public List<String> getLores() {
+	public List<Component> getLores() {
 		return lore;
 	}
 
@@ -575,13 +602,13 @@ public class ItemBuilder {
 	}
 
 	/**
-	 * Returns all Lores
+	 * Returns all lore as a string list
 	 *
 	 * @deprecated Use {@code ItemBuilder#getLores}
 	 */
 	@Deprecated
 	public List<String> getLore() {
-		return lore;
+		return lore.stream().map(line -> LegacyComponentSerializer.legacySection().serialize(line)).toList();
 	}
 
 	/**
@@ -643,8 +670,8 @@ public class ItemBuilder {
 		item.setDurability(damage);
 		meta = item.getItemMeta();
 		if (enchantments.size() > 0) item.addUnsafeEnchantments(enchantments);
-		if (displayName != null) Objects.requireNonNull(meta).setDisplayName(displayName);
-		if (lore.size() > 0) Objects.requireNonNull(meta).setLore(lore);
+		if (displayName != null) Objects.requireNonNull(meta).displayName(displayName);
+		if (lore.size() > 0) Objects.requireNonNull(meta).lore(lore);
 		if (flags.size() > 0) flags.forEach(f -> meta.addItemFlags(f));
 		if (hideAttributes) Objects.requireNonNull(meta).addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		if (glow) Objects.requireNonNull(meta).addEnchant(new Glow(new NamespacedKey(bLib.getPlugin(), "glow")), 1, true);

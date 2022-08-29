@@ -25,10 +25,10 @@ public class bLib {
 	@Getter
 	@Setter
 	private static boolean autoCompleteCommandsFromUsage = false;
-	@Getter
 	/**
 	 * @deprecated Please use https://github.com/OctoPvP/Commander/
 	 */
+	@Getter
 	private static CommandFramework commandFramework;
 
 	public bLib(Plugin plugin, String prefix) {

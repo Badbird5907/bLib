@@ -19,7 +19,7 @@ public class MenuListener implements Listener {
 
         if (menu == null) return;
 
-        if (menu.isCancel())
+        if (menu.isCancelClicks())
             event.setCancelled(true);
 
         if (event.getSlot() != event.getRawSlot()) return;

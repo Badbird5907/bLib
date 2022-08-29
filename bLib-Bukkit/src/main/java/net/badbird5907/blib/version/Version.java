@@ -32,9 +32,12 @@ public enum Version {
 	V_1_16_5,
 	V_1_17,
 	V_1_17_1,
-	//TODO: future versions
 	V_1_18,
-	V_1_18_1;
+	V_1_18_1,
+	V_1_18_2,
+	V_1_19,
+	V_1_19_1,
+	V_1_19_2;
 
 	public static Version getVersion(String s) {
 		return stream(values()).filter(value -> value.name().equalsIgnoreCase(s)).findFirst().orElse(null);

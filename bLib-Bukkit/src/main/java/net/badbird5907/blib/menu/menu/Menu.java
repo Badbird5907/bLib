@@ -9,6 +9,7 @@ import net.badbird5907.blib.menu.MenuManager;
 import net.badbird5907.blib.menu.buttons.Button;
 import net.badbird5907.blib.menu.buttons.impl.CloseButton;
 import net.badbird5907.blib.util.CC;
+import net.badbird5907.blib.util.CUtil;
 import net.badbird5907.blib.util.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -23,7 +24,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 
 public abstract class Menu {
     public Plugin plugin = bLib.getPlugin();
@@ -59,14 +59,15 @@ public abstract class Menu {
 
     @Getter
     @Setter
-    private boolean cancel = true;
+    private boolean cancelClicks = true;
 
 
     @Getter
     @Setter
     public Menu previous;
 
-    public void onClick(InventoryClickEvent clickEvent) {}
+    public void onClick(InventoryClickEvent clickEvent) {
+    }
 
     public void open(Sender sender) {
         open(sender.getPlayer());
@@ -88,22 +89,22 @@ public abstract class Menu {
             if (title.length() > 32) title = title.substring(0, 32);
             title = CC.translate(title);
 
-            if (player.getOpenInventory() != null) {
-                player.closeInventory();
-            }
+            player.getOpenInventory();
+            player.closeInventory();
 
-            Inventory inventory = Bukkit.createInventory(player, this.getInventorySize(this.buttons), title);
+            Inventory inventory = Bukkit.createInventory(player, this.getInventorySize(this.buttons),
+                    CUtil.deseializeSection(title));
 
-            this.buttons.forEach(button -> {
-                //System.out.println(button.getItem(player));
-                if (button.getSlot() >= 0)
+            for (Button button : buttons) {
+                if (button.getSlot() >= 0) {
                     inventory.setItem(button.getSlot(), button.getItem(player));
+                }
                 if (button.getSlots() != null) {
                     Arrays.stream(button.getSlots()).forEach(extra -> {
                         if (shouldKeepExtra(extra)) inventory.setItem(extra, button.getItem(player));
                     });
                 }
-            });
+            }
 
             MenuManager.getOpenedMenus().put(player.getUniqueId(), this);
             player.openInventory(inventory);
@@ -115,13 +116,15 @@ public abstract class Menu {
     }
 
     private boolean shouldKeepExtra(int slot) {
-        if (slot < 0)
+        if (slot < 0) {
             return false;
+        }
         for (Button button1 : this.buttons) {
-            if (button1.getSlot() == slot)
+            if (button1.getSlot() == slot) {
                 return false;
-            else if (Lists.newArrayList(button1.getSlots()).contains(slot))
+            } else if (Lists.newArrayList(button1.getSlots()).contains(slot)) {
                 return true;
+            }
         }
         return true;
     }
@@ -159,25 +162,22 @@ public abstract class Menu {
             }
 
             if (inventory == null) {
-                inventory = Bukkit.createInventory(player, this.getInventorySize(this.buttons), title);
+                inventory = Bukkit.createInventory(player, this.getInventorySize(this.buttons), CUtil.deseializeSection(title));
             }
-
-            /**
-             * TemporaryInventory
-             * Used to prevent item flickering because 'inventory' is live player inventory
-             */
+            // Used to prevent item flickering because 'inventory' is live player inventory
             Inventory temporaryInventory = Bukkit.createInventory(player, inventory.getSize(), currentName);
 
-            this.buttons.forEach(slot -> {
-                if (slot.getSlot() >= 0)
-                    temporaryInventory.setItem(slot.getSlot(), slot.getItem(player));
+            for (Button button : this.buttons) {
+                if (button.getSlot() >= 0) {
+                    temporaryInventory.setItem(button.getSlot(), button.getItem(player));
+                }
 
-                if (slot.getSlots() != null) {
-                    Arrays.stream(slot.getSlots()).forEach(extra -> {
-                        if (shouldKeepExtra(extra)) temporaryInventory.setItem(extra, slot.getItem(player));
+                if (button.getSlots() != null) {
+                    Arrays.stream(button.getSlots()).forEach(extra -> {
+                        if (shouldKeepExtra(extra)) temporaryInventory.setItem(extra, button.getItem(player));
                     });
                 }
-            });
+            }
 
             //MenuManager.getOpenedMenus().remove(player.getUniqueId());
             //MenuManager.getOpenedMenus().put(player.getUniqueId(), this);
@@ -187,7 +187,6 @@ public abstract class Menu {
                 player.updateInventory();
             } else {
                 player.openInventory(inventory);
-                Bukkit.getConsoleSender().sendMessage(CC.translate("&cOpened new inventory"));
             }
 
             if (currentName != title) {
@@ -254,6 +253,7 @@ public abstract class Menu {
     public void onClose(Player player) {
 
     }
+
     public void onClose(Player player, InventoryCloseEvent event) {
 
     }

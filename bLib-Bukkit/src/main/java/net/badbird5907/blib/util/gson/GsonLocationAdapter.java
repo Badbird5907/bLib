@@ -21,7 +21,7 @@ public class GsonLocationAdapter implements JsonDeserializer<Location>, JsonSeri
 		final JsonElement z = obj.get("z");
 		final JsonElement yaw = obj.get("yaw");
 		final JsonElement pitch = obj.get("pitch");
-		assert worldId != null && x != null && y != null && z != null : "String json mal formada!";
+		assert worldId != null && x != null && y != null && z != null : "Malformed json!";
 		assert worldId.isJsonPrimitive() && ((JsonPrimitive) worldId).isString() : "World is not a string!";
 		assert x.isJsonPrimitive() && ((JsonPrimitive) x).isNumber() : "X is not a number!";
 		assert y.isJsonPrimitive() && ((JsonPrimitive) y).isNumber() : "Y is not a number!";

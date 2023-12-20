@@ -20,6 +20,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * ItemBuilder - An API class to create an
@@ -361,7 +362,7 @@ public class ItemBuilder {
 	 */
 	public ItemBuilder lore(List<String> lore) {
 		Validate.notNull(lore, "The lores are null.");
-		this.lore = lore.stream().map(CUtil::deseializeSection).toList();
+		this.lore = lore.stream().map(CUtil::deseializeSection).collect(Collectors.toList());
 		return this;
 	}
 
@@ -608,7 +609,7 @@ public class ItemBuilder {
 	 */
 	@Deprecated
 	public List<String> getLore() {
-		return lore.stream().map(line -> LegacyComponentSerializer.legacySection().serialize(line)).toList();
+		return lore.stream().map(line -> LegacyComponentSerializer.legacySection().serialize(line)).collect(Collectors.toList());
 	}
 
 	/**

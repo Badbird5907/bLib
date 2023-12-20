@@ -1,5 +1,6 @@
 package net.badbird5907.blib.command;
 
+import org.apache.commons.lang3.Validate;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -9,7 +10,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.List;
 
 import static java.util.Arrays.stream;
-import static org.apache.commons.lang.Validate.notNull;
+import static org.apache.commons.lang3.Validate.notNull;
 
 /**
  * Command Framework - BukkitCommand <br>

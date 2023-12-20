@@ -38,7 +38,6 @@ public class bLib {
 		Tasks.init(plugin);
 		commandFramework = new CommandFramework(plugin);
 		plugin.getServer().getPluginManager().registerEvents(new MenuListener(), plugin);
-		Glow.init(plugin);
 	}
 
 	public static bLib create(Plugin plugin) {

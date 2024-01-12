@@ -2,6 +2,15 @@
 
 bLib is a library I have made to help ease java development, especially development of spigot/bukkit plugins.
 
+# DO NOT USE THIS LIBRARY!
+
+I am only providing legacy support for this library (making it work on new versions), and will not be working on it.
+It contains some very bad / buggy code. Please consider using a library listed below.
+
+Suggested replacement libraries:
+Commands - [OctoPvP/Commander](https://github.com/OctoPvP/Commander) / [Incendo/cloud](https://github.com/Incendo/cloud) / [ACF](https://github.com/aikar/commands)
+GUIs - [TriumphGUI](https://github.com/TriumphTeam/triumph-gui)
+
 ## Quick links
 
 [Bukkit/Spigot/Paper Library](https://github.com/Badbird-5907/bLib/tree/master/bLib-Bukkit/src/main/java/net/badbird5907/blib) <br>

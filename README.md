@@ -8,7 +8,9 @@ I am only providing legacy support for this library (making it work on new versi
 It contains some very bad / buggy code. Please consider using a library listed below.
 
 Suggested replacement libraries:
+
 Commands - [OctoPvP/Commander](https://github.com/OctoPvP/Commander) / [Incendo/cloud](https://github.com/Incendo/cloud) / [ACF](https://github.com/aikar/commands)
+
 GUIs - [TriumphGUI](https://github.com/TriumphTeam/triumph-gui)
 
 ## Quick links

@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import net.badbird5907.blib.command.CommandFramework;
 import net.badbird5907.blib.menu.MenuListener;
-import net.badbird5907.blib.util.Glow;
 import net.badbird5907.blib.util.Logger;
 import net.badbird5907.blib.util.ReflectionUtils;
 import net.badbird5907.blib.util.Tasks;

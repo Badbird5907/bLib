@@ -29,7 +29,7 @@ GUIs - [TriumphGUI](https://github.com/TriumphTeam/triumph-gui)
 <dependency>
 	<groupId>net.badbird5907</groupId>
 	<artifactId>bLib-Parent</artifactId>
-	<version>2.1.11-REL</version>
+	<version>2.2.0-REL</version>
 </dependency>
 ```
 
@@ -38,13 +38,13 @@ GUIs - [TriumphGUI](https://github.com/TriumphTeam/triumph-gui)
 #### Groovy DSL
 
 ```groovy
-implementation 'net.badbird5907:bLib:2.1.11-REL'
+implementation 'net.badbird5907:bLib:2.2.0-REL'
 ```
 
 #### Kotlin DSL
 
 ```kotlin
-implementation("net.badbird5907:bLib:2.1.11-REL")
+implementation("net.badbird5907:bLib:2.2.0-REL")
 ```
 
 ## Usage (Bukkit)

@@ -1,5 +1,6 @@
 package net.badbird5907.blib.menu.buttons;
 
+import com.cryptomorin.xseries.XMaterial;
 import net.badbird5907.blib.menu.menu.Menu;
 import net.badbird5907.blib.util.ItemBuilder;
 import org.bukkit.entity.Player;
@@ -10,7 +11,6 @@ import java.util.List;
 
 import static java.util.stream.IntStream.range;
 import static net.badbird5907.blib.util.CC.GRAY;
-import static net.badbird5907.blib.util.XMaterial.GRAY_STAINED_GLASS_PANE;
 
 public class PlaceholderButton extends Button {
 	private Menu menu;
@@ -26,7 +26,7 @@ public class PlaceholderButton extends Button {
 
 	@Override
 	public ItemStack getItem(Player player) {
-		return new ItemBuilder(GRAY_STAINED_GLASS_PANE.parseItem()).name(GRAY).build();
+		return new ItemBuilder(XMaterial.GRAY_STAINED_GLASS_PANE.parseItem()).name(GRAY).build();
 	}
 
 	@Override

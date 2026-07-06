@@ -1,7 +1,7 @@
 package net.badbird5907.blib.menu.buttons;
 
+import com.cryptomorin.xseries.XMaterial;
 import net.badbird5907.blib.util.ItemBuilder;
-import net.badbird5907.blib.util.XMaterial;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;

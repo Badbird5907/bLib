@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import lombok.SneakyThrows;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.stream.Stream;
@@ -27,11 +28,21 @@ public class FileUtils {
 		printObjectToFile(file, o, new Gson());
 	}
 
-	@SneakyThrows
 	public static void printObjectToFile(File file, Object o, Gson gson) {
-		if (!file.exists()) file.createNewFile();
-		PrintStream ps = new PrintStream(file);
-		ps.print(gson.toJson(o));
+		if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        PrintStream ps = null;
+        try {
+            ps = new PrintStream(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        ps.print(gson.toJson(o));
 		ps.close();
 	}
 }

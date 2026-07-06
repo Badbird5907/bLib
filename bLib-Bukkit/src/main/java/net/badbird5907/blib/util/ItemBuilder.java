@@ -9,7 +9,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -675,7 +675,7 @@ public class ItemBuilder {
 		if (lore.size() > 0) Objects.requireNonNull(meta).lore(lore);
 		if (flags.size() > 0) flags.forEach(f -> meta.addItemFlags(f));
 		if (hideAttributes) Objects.requireNonNull(meta).addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-		if (glow) Objects.requireNonNull(meta).addEnchant(new Glow(new NamespacedKey(bLib.getPlugin(), "glow")), 1, true);
+		if (glow) Objects.requireNonNull(meta).setEnchantmentGlintOverride(true);
 		item.setItemMeta(meta);
 		return item;
 	}

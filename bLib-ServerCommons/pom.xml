@@ -5,15 +5,15 @@
     <parent>
         <artifactId>bLib-Parent</artifactId>
         <groupId>net.badbird5907</groupId>
-        <version>2.1.11-REL</version>
+        <version>2.2.0-REL</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>bLib-ServerCommons</artifactId>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
     </properties>
 
     <repositories>
@@ -28,23 +28,16 @@
     </repositories>
 
     <dependencies>
-        <!-- bungee-chat is included in spigot servers -->
-        <dependency>
-            <groupId>io.github.waterfallmc</groupId>
-            <artifactId>waterfall-chat</artifactId>
-            <version>1.16-R0.4-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.30</version>
+            <version>1.18.46</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.badbird5907</groupId>
             <artifactId>bLib-Common</artifactId>
-            <version>2.1.11-REL</version>
+            <version>2.2.0-REL</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -52,7 +45,11 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.12.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>net.md-5</groupId>
+            <artifactId>bungeecord-api</artifactId>
+            <version>1.21-R0.4</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
-
 </project>
